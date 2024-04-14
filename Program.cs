@@ -1,10 +1,12 @@
-﻿namespace HeliostatCentral
+﻿using HeliostatCentral.Handlers;
+
+namespace HeliostatCentral
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            SerialPortHandler sph = new SerialPortHandler();
         }
     }
 }
