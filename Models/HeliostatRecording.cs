@@ -9,17 +9,17 @@ namespace HeliostatCentral.Models
     // Simple POCO class
     public class HeliostatRecording
     {
-        internal int horizontalDegrees;
-        internal int verticalDegrees;
-        internal int lightLevel;
-        internal DateTime datetime;
+        internal int HorizontalDegrees;
+        internal int VerticalDegrees;
+        internal int LightLevel;
+        internal DateTime DateTimeStamp;
 
-        public HeliostatRecording(int _hori, int _vert, int _light, DateTime _dt)
+        public HeliostatRecording(int horizontalDegrees, int verticalDegrees, int lightLevel, DateTime dateTimeStamp)
         {
-            this.horizontalDegrees = _hori;
-            this.verticalDegrees = _vert;
-            this.lightLevel = _light;
-            this.datetime = _dt;
+            this.HorizontalDegrees = horizontalDegrees;
+            this.VerticalDegrees = verticalDegrees;
+            this.LightLevel = lightLevel;
+            this.DateTimeStamp = dateTimeStamp;
         }
     }
 }
