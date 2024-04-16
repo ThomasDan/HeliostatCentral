@@ -33,6 +33,7 @@ namespace HeliostatCentral.Handlers
             int horizontal = 0;
             int vertical = 0;
             int light = 0;
+            bool valid = true;
 
             try
             {
@@ -44,13 +45,15 @@ namespace HeliostatCentral.Handlers
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
+                valid = false;
             }
 
             HeliostatRecording hr = new HeliostatRecording(
                 horizontalDegrees: horizontal,
                 verticalDegrees: vertical,
                 lightLevel: light,
-                dateTimeStamp: DateTime.Now 
+                dateTimeStamp: DateTime.Now,
+                valid
                 );
 
             return hr;
