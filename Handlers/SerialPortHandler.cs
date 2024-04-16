@@ -12,8 +12,8 @@ namespace HeliostatCentral.Handlers
     {
         SerialPort serialPort;
 
-        List<string> messages;
-        object messagesLock;
+        List<string> receivedMessages;
+        object receivedMessagesLock;
 
         public SerialPortHandler() 
         {
@@ -23,8 +23,8 @@ namespace HeliostatCentral.Handlers
             // Arduino Unos by default use baud rates of 9600
             serialPort.BaudRate = 9600;
             serialPort.ReadTimeout = 500;
-            messages = new List<string>();
-            messagesLock = new object();
+            receivedMessages = new List<string>();
+            receivedMessagesLock = new object();
         }
 
         /// <summary>
@@ -39,11 +39,11 @@ namespace HeliostatCentral.Handlers
                 Console.WriteLine(" " + (i + 1) + ". " + portNames[i]);
             }
 
-            //Console.Write("Enter Serial Port Number: ");
+            Console.Write("Enter Serial Port Number: ");
 
-            //int choice = Convert.ToInt32(Console.ReadLine()) - 1;
+            int choice = Convert.ToInt32(Console.ReadLine()) - 1;
 
-            return "COM1";//portNames[choice];
+            return portNames[choice];
         }
 
         public void Run()
@@ -55,25 +55,26 @@ namespace HeliostatCentral.Handlers
             // Ideally, there would be a serialPort.Close(); call for when the program ends. But the program doesn't end.
         }
 
-        
-
+        /// <summary>
+        /// Infinitely loop that receives any messages waiting in the serialPort every half second
+        /// </summary>
         private void receiveCommunication()
         {
             while (true)
             {
                 try
                 {
-                    if (Monitor.TryEnter(messagesLock))
+                    if (Monitor.TryEnter(receivedMessagesLock))
                     {
                         string newMessage = serialPort.ReadLine();
                         try
                         {
-                            messages.Add(newMessage);
+                            receivedMessages.Add(newMessage);
                         }
                         finally
                         {
-                            Monitor.PulseAll(messagesLock);
-                            Monitor.Exit(messagesLock);
+                            Monitor.PulseAll(receivedMessagesLock);
+                            Monitor.Exit(receivedMessagesLock);
                         }
                     }
                 }
@@ -103,18 +104,18 @@ namespace HeliostatCentral.Handlers
             bool acquiredMessages = false;
             while (!acquiredMessages)
             {
-                if (Monitor.TryEnter(messagesLock))
+                if (Monitor.TryEnter(receivedMessagesLock))
                 {
-                    _messages = new List<string>(messages);
+                    _messages = new List<string>(receivedMessages);
                     try
                     {
-                        messages.Clear();
+                        receivedMessages.Clear();
                         acquiredMessages = true;
                     }
                     finally
                     {
-                        Monitor.PulseAll(messagesLock);
-                        Monitor.Exit(messagesLock);
+                        Monitor.PulseAll(receivedMessagesLock);
+                        Monitor.Exit(receivedMessagesLock);
                     }
                 } 
                 else

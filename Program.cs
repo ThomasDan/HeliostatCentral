@@ -7,6 +7,7 @@ namespace HeliostatCentral
         static void Main(string[] args)
         {
             SerialPortHandler sph = new SerialPortHandler();
+            sph.Run();
         }
     }
 }
