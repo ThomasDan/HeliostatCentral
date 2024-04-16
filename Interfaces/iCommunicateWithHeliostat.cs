@@ -8,7 +8,7 @@ namespace HeliostatCentral.Interfaces
 {
     internal interface iCommunicateWithHeliostat
     {
-        internal void Run();
+        internal void Initialize();
         internal List<string> GetMessages();
         internal void SendCommunication(string message);
     }

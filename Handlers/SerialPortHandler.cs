@@ -22,6 +22,7 @@ namespace HeliostatCentral.Handlers
 
             // Arduino Unos by default use baud rates of 9600
             serialPort.BaudRate = 9600;
+            // Timing out in 500 miliseconds is arbitrary
             serialPort.ReadTimeout = 500;
             receivedMessages = new List<string>();
             receivedMessagesLock = new object();
@@ -32,21 +33,29 @@ namespace HeliostatCentral.Handlers
         /// </summary>
         private string GetPortName()
         {
-            Console.WriteLine("Ports:");
             string[] portNames = SerialPort.GetPortNames();
-            for (int i = 0; i < portNames.Length; i++)
+            int choice = 0;
+            if (portNames.Count() > 1) {
+                Console.WriteLine("Ports:");
+                for (int i = 0; i < portNames.Length; i++)
+                {
+                    Console.WriteLine(" " + (i + 1) + ". " + portNames[i]);
+                }
+
+                Console.Write("Enter Serial Port Number: ");
+                choice = Convert.ToInt32(Console.ReadLine()) - 1;
+            } else if (portNames.Count() == 1)
             {
-                Console.WriteLine(" " + (i + 1) + ". " + portNames[i]);
+                Console.WriteLine("Automatically chose port " + portNames[0] + " (only option)");
+            } else
+            {
+                throw new IOException("no serial port found")
             }
-
-            Console.Write("Enter Serial Port Number: ");
-
-            int choice = Convert.ToInt32(Console.ReadLine()) - 1;
 
             return portNames[choice];
         }
 
-        public void Run()
+        public void Initialize()
         {
             Thread receiver = new Thread(receiveCommunication);
             serialPort.Open();
