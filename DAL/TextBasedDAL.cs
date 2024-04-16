@@ -80,14 +80,18 @@ namespace HeliostatCentral.DAL
         {
             if (hr.IsValid)
             {
+                // ReadAllLines() gets us a list of strings, each string representing One line in the text file we use to store HeliostatRecordings
                 List<string> existingRecords = ReadAllLines();
 
                 StreamWriter sw = new StreamWriter(relativePath);
 
                 if (existingRecords.Count > 0)
                 {
+                    // Here we join all the existing recordings into one string, across many lines (\n creating new lines between each existing record)
                     string joinedExistingRecords = String.Join('\n', existingRecords);
+                    // Writing all the existing record-lines to the text file at once.
                     sw.WriteLine(joinedExistingRecords);
+                    // We do this, because as soon as we open up the file and start writing, the existing lines are overwritten.
                 }
 
                 // The (probable) use of WriteLine above, ensures we are already on a new line, and therefore do not want to use WriteLine again,
