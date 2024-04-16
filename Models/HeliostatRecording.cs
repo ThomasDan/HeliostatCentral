@@ -21,5 +21,9 @@ namespace HeliostatCentral.Models
             this.LightLevel = lightLevel;
             this.DateTimeStamp = dateTimeStamp;
         }
+        public override string ToString()
+        {
+            return DateTimeStamp.ToString("dd/MM/yy HH:mm:ss") + " - H: " + HorizontalDegrees + " | V: " + VerticalDegrees + " | L: " + LightLevel;
+        }
     }
 }

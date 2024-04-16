@@ -13,7 +13,7 @@ namespace HeliostatCentral.DAL
     {
         string relativePath;
 
-        TextBasedDAL()
+        public TextBasedDAL()
         {
             this.relativePath = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
         }
@@ -70,8 +70,15 @@ namespace HeliostatCentral.DAL
 
             StreamWriter sw = new StreamWriter(relativePath);
 
-            sw.WriteLine(String.Join('\n', existingRecords));
-            sw.WriteLine(
+            if (existingRecords.Count > 0) 
+            {
+                string joinedExistingRecords = String.Join('\n', existingRecords);
+                sw.WriteLine(joinedExistingRecords);
+            }
+            
+            // The (probable) use of WriteLine above, ensures we are already on a new line, and therefore do not want to use WriteLine again,
+            //      else we make a new line after this line, which will cause issues as it tries to load the empty line ("") as heliostat data.
+            sw.Write(
                 hr.HorizontalDegrees.ToString() + "," + 
                 hr.VerticalDegrees.ToString() + "," + 
                 hr.LightLevel.ToString() + "," + 
