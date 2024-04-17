@@ -49,13 +49,16 @@ namespace HeliostatCentral.Handlers
                 // Here we get all freshly-updated heliostat records
                 hrs = dal.LoadRecordings();
 
-                // Then we figure out which of the recent records seem like the best potential instruction for the Heliostat
-                HeliostatRecording bestHR = DetermineBestRecording(hrs);
+                if (hrs.Count > 0)
+                {
+                    // Then we figure out which of the recent records seem like the best potential instruction for the Heliostat
+                    HeliostatRecording bestHR = DetermineBestRecording(hrs);
 
-                // Then we convert the Recording into a string instruction
-                string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
-                // ..and send the instruction to the Heliostat
-                comm.SendCommunication(instruction);
+                    // Then we convert the Recording into a string instruction
+                    string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
+                    // ..and send the instruction to the Heliostat
+                    comm.SendCommunication(instruction);
+                }
 
                 Thread.Sleep(5000);
             }
@@ -68,7 +71,26 @@ namespace HeliostatCentral.Handlers
         /// <returns>The Heliostat Recording with the highest LightLevel</returns>
         private HeliostatRecording DetermineBestRecording(List<HeliostatRecording> hrs)
         {
-            return hrs[0];
+            // First we remove all records older than 7 days, as the sun's path has changed significantly since 7 days ago
+            List<HeliostatRecording> latestRecords = (List<HeliostatRecording>)hrs.Where(a => a.DateTimeStamp.Date > DateTime.Now.AddDays(-7).Date);
+
+            HeliostatRecording bestHR = new HeliostatRecording(0,0,0,DateTime.Now,false);
+            
+            foreach (HeliostatRecording record in latestRecords)
+            {
+                TimeSpan now = DateTime.Now.TimeOfDay;
+                
+                // We look at recordings within 5 seconds of this time of day
+                if (record.DateTimeStamp.TimeOfDay < now.Add(new TimeSpan(5000)) && record.DateTimeStamp.TimeOfDay > now.Add(new TimeSpan(-5000)))
+                {
+                    if (record.LightLevel > bestHR.LightLevel)
+                    {
+                        bestHR = record;
+                    }
+                }
+            }
+
+            return bestHR;
         }
     }
 }
