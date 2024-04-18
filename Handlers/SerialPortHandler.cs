@@ -49,7 +49,7 @@ namespace HeliostatCentral.Handlers
                 Console.WriteLine("Automatically chose port " + portNames[0] + " (only option)");
             } else
             {
-                throw new IOException("no serial port found")
+                throw new IOException("no serial port found");
             }
 
             return portNames[choice];
