@@ -10,7 +10,7 @@ namespace HeliostatCentral.Handlers
 {
     internal class HeliostatCentralLogic
     {
-        private Thread _thread;
+        private Thread thread;
         private iInterpretHeliostatCommunication interpreter;
         private iCommunicateWithHeliostat comm;
         private iHeliostatDataAccessLayer dal;
@@ -20,13 +20,13 @@ namespace HeliostatCentral.Handlers
             this.interpreter = _interp;
             this.comm = _comm;
             this.dal = _dal;
-            this._thread = new Thread(Run);
+            this.thread = new Thread(Run);
         }
 
         public void Initialize()
         {
             comm.Initialize();
-            _thread.Start();
+            thread.Start();
         }
 
         private void Run()
