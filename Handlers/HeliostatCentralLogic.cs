@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Handlers
 {
-    internal class HeliostatCentralLogic
+    public class HeliostatCentralLogic
     {
         private Thread thread;
         private iInterpretHeliostatCommunication interpreter;

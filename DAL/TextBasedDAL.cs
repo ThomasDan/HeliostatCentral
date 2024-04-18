@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.DAL
 {
-    internal class TextBasedDAL : iHeliostatDataAccessLayer
+    public class TextBasedDAL : iHeliostatDataAccessLayer
     {
         string relativePath;
 

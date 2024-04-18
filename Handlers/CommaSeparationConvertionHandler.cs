@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Handlers
 {
-    internal class CommaSeparationConvertionHandler : iInterpretHeliostatCommunication
+    public class CommaSeparationConvertionHandler : iInterpretHeliostatCommunication
     {
         public string ConvertHeliostatRecordingToString(HeliostatRecording hr)
         {

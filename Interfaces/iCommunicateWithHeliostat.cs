@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Interfaces
 {
-    internal interface iCommunicateWithHeliostat
+    public interface iCommunicateWithHeliostat
     {
-        internal void Initialize();
-        internal List<string> GetMessages();
-        internal void SendCommunication(string message);
+        public void Initialize();
+        public List<string> GetMessages();
+        public void SendCommunication(string message);
     }
 }

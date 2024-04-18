@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Interfaces
 {
-    internal interface iInterpretHeliostatCommunication
+    public interface iInterpretHeliostatCommunication
     {
-        internal string ConvertHeliostatRecordingToString(HeliostatRecording hr);
-        internal HeliostatRecording ConvertStringToHeliostatRecording(string message);
+        public string ConvertHeliostatRecordingToString(HeliostatRecording hr);
+        public HeliostatRecording ConvertStringToHeliostatRecording(string message);
     }
 }

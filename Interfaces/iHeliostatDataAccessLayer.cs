@@ -9,7 +9,7 @@ namespace HeliostatCentral.Interfaces
 {
     public interface iHeliostatDataAccessLayer
     {
-        internal List<HeliostatRecording> LoadRecordings();
-        internal void SaveRecording(HeliostatRecording hr);
+        public List<HeliostatRecording> LoadRecordings();
+        public void SaveRecording(HeliostatRecording hr);
     }
 }
