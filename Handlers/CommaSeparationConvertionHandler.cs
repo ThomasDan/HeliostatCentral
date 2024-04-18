@@ -44,7 +44,7 @@ namespace HeliostatCentral.Handlers
             } 
             catch (Exception e)
             {
-                Console.WriteLine(e.ToString());
+                Console.WriteLine(e.ToString() + "\nThe Message causing error: " + message);
                 valid = false;
             }
 
