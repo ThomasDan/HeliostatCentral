@@ -10,6 +10,6 @@ namespace HeliostatCentral.Interfaces
     public interface iHeliostatDataAccessLayer
     {
         public List<HeliostatRecording> LoadRecordings();
-        public void SaveRecording(HeliostatRecording hr);
+        public void SaveRecording(List<HeliostatRecording> hrs);
     }
 }

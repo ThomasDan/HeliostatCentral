@@ -76,39 +76,40 @@ namespace HeliostatCentral.DAL
             return hr;
         }
 
-        public void SaveRecording(HeliostatRecording hr)
+        public void SaveRecording(List<HeliostatRecording> hrs)
         {
-            if (hr.IsValid)
+            // ReadAllLines() gets us a list of strings, each string representing One line in the text file we use to store HeliostatRecordings
+            List<string> existingRecords = ReadAllLines();
+
+            StreamWriter sw = new StreamWriter(relativePath);
+
+            if (existingRecords.Count > 0)
             {
-                // ReadAllLines() gets us a list of strings, each string representing One line in the text file we use to store HeliostatRecordings
-                List<string> existingRecords = ReadAllLines();
+                // Here we join all the existing recordings into one string, across many lines (\n creating new lines between each existing record)
+                string joinedExistingRecords = String.Join('\n', existingRecords);
+                // Writing all the existing record-lines to the text file at once.
+                sw.WriteLine(joinedExistingRecords);
+                // We do this, because as soon as we open up the file and start writing, the existing lines are overwritten.
+            }
 
-                StreamWriter sw = new StreamWriter(relativePath);
-
-                if (existingRecords.Count > 0)
+            // The (probable) use of WriteLine above, ensures we are already on a new line, and therefore do not want to use WriteLine again,
+            //      else we make a new line after this line, which will cause issues as it tries to load the empty line ("") as heliostat data.
+            foreach (HeliostatRecording hr in hrs) {
+                if (hr.IsValid)
                 {
-                    // Here we join all the existing recordings into one string, across many lines (\n creating new lines between each existing record)
-                    string joinedExistingRecords = String.Join('\n', existingRecords);
-                    // Writing all the existing record-lines to the text file at once.
-                    sw.WriteLine(joinedExistingRecords);
-                    // We do this, because as soon as we open up the file and start writing, the existing lines are overwritten.
-                }
-
-                // The (probable) use of WriteLine above, ensures we are already on a new line, and therefore do not want to use WriteLine again,
-                //      else we make a new line after this line, which will cause issues as it tries to load the empty line ("") as heliostat data.
-                sw.Write(
+                    sw.WriteLine(
                     hr.HorizontalDegrees.ToString() + "," +
                     hr.VerticalDegrees.ToString() + "," +
                     hr.LightLevel.ToString() + "," +
                     hr.DateTimeStamp.ToString()
                     );
-
-                sw.WriteLine();
-                sw.Close();
-            } else
-            {
-                Console.WriteLine("Invalid Recording: " + hr.ToString());
+                } else
+                {
+                    Console.WriteLine("Attempted to insert invalid record: " + hr.ToString());
+                }
             }
+
+            sw.Close();
         }
     }
 }

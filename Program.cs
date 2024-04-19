@@ -9,14 +9,16 @@ namespace HeliostatCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-            //SerialPortHandler sp = new SerialPortHandler();
-            //CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
+            SerialPortHandler sp = new SerialPortHandler();
+            CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
-            //HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, sp, dal);
-            //logic.Initialize();
+            HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, sp, dal);
+            logic.Initialize();
 
-            List<HeliostatRecording> hrs = GenerateData(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0));
+            //List<HeliostatRecording> hrs = GenerateData(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0));
 
+            //dal.SaveRecording(hrs);
+            
         }
 
         static List<HeliostatRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
@@ -36,7 +38,7 @@ namespace HeliostatCentral
             {
                 // Here we generate the timestamp for the recording
                 currTS = currTS.Add(new TimeSpan(0, 0, 5));
-                DateTime hrdt = new DateTime(dt.Year, dt.Month, dt.Day-1, currTS.Hours, currTS.Minutes, currTS.Seconds);
+                DateTime hrdt = new DateTime(dt.Year, dt.Month, dt.Day-3, currTS.Hours, currTS.Minutes, currTS.Seconds);
                 
                 currTimeProportion = (((int)currTS.TotalSeconds - (int)sunDown.TotalSeconds) / 5) * -1;
 
@@ -45,8 +47,6 @@ namespace HeliostatCentral
                     currTimeProportion = 1;
                 }
 
-                Console.WriteLine(hrdt.ToString("HH:mm:ss") + " - " + currTimeProportion);
-
                 // Then we generate a proportional horizontal value
                 hori = 30 + (int)(((decimal)120 / (decimal)baseTimeProportion) * currTimeProportion);
 
@@ -54,22 +54,22 @@ namespace HeliostatCentral
                 // Then we generate a proportional vertical value
                 if (currTS.Hours < 12)
                 {
-                    vert = 175 + (int)(((decimal)50 / (decimal)baseTimeProportion) * currTimeProportion);
+                    vert = 175 - (int)( 
+                        ((decimal)50 / ((decimal)baseTimeProportion / 2)) * (currTimeProportion - ((decimal)baseTimeProportion / 2))
+                        );
                 } else
                 {
-                    vert = 175 + (50 - (int)(((decimal)50 / (decimal)baseTimeProportion) * currTimeProportion)) * 2;
+                    vert = 175 - (50 - (int)(((decimal)50 / (decimal)baseTimeProportion) * (decimal)currTimeProportion) * 2);
                 }
 
 
                 // Then we generate a light level
-                light = 250;
+                light = 150;
 
                 HeliostatRecording hr = new HeliostatRecording(hori, vert, light, hrdt, true);
                 Console.WriteLine(hr.ToString());
                 hrs.Add(hr);
-
             }
-
 
             return hrs;
         }

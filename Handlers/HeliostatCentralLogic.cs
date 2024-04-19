@@ -32,19 +32,23 @@ namespace HeliostatCentral.Handlers
         private void Run()
         {
             List<string> rawReceivedMessages;
+            List<HeliostatRecording> unsavedHRs;
             List<HeliostatRecording> hrs;
             while(true)
             {
                 // Here we acquire the latest recording(s) from the serial port
                 rawReceivedMessages = comm.GetMessages();
+                unsavedHRs = new List<HeliostatRecording>();
                 foreach(string message in rawReceivedMessages)
                 {
                     // Then we convert each message (if any) into a HeliostatRecording
                     HeliostatRecording hr = interpreter.ConvertStringToHeliostatRecording(message);
-                    // Then we save the HeliostatRecording to the database
-                    dal.SaveRecording(hr);
-                    // Thus we have updated the database
+                    unsavedHRs.Add(hr);
                 }
+                // Then we save the HeliostatRecording to the database
+                dal.SaveRecording(unsavedHRs);
+                // Thus we have updated the database
+
 
                 // Here we get all freshly-updated heliostat records
                 hrs = dal.LoadRecordings();
