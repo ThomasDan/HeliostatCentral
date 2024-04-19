@@ -21,6 +21,13 @@ namespace HeliostatCentral
             
         }
 
+        /*
+            Min Vertikal Højde : 175 (Solopgang/Solnedgang)
+            Max Vertikal Højde : 125 (Middag/Høj Sol)
+
+            Min Horisontal : 150 (Øst)
+            Max Horisontal : 30 (Vest)
+        */
         static List<HeliostatRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
         {
             List<HeliostatRecording> hrs = new List<HeliostatRecording>();
@@ -73,12 +80,5 @@ namespace HeliostatCentral
 
             return hrs;
         }
-        /*
-            Max Vertikal Højde : 125 (Middag/Høj Sol)
-            Min Vertikal Højde : 175 (Solopgang/Solnedgang)
-
-            Max Horisontal : 30 (Vest)
-            Min Horisontal : 150 (Øst)
-        */
     }
 }
