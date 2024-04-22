@@ -18,7 +18,8 @@ namespace HeliostatCentral.DAL
             this.relativePath = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
         }
 
-        private List<string> ReadAllLines()
+        // Made public for testing purposes
+        public List<string> ReadAllLines()
         {
             StreamReader sr = new StreamReader(relativePath);
             List<string> lines = new List<string>();
@@ -49,7 +50,8 @@ namespace HeliostatCentral.DAL
             return hrs;
         }
 
-        private HeliostatRecording ConvertDataToHeliostat(string data)
+        // Made public for testing purposes
+        public HeliostatRecording ConvertDataToHeliostat(string data)
         {
             string[] dataSeparated = data.Split(',');
 
