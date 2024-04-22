@@ -11,9 +11,6 @@ namespace HeliostatCentral.DAL
 {
     public class TextBasedDAL : iHeliostatDataAccessLayer
     {
-        private string relativePath;
-        private TextWriter textWriter;
-
         private readonly StreamReader _streamReader;
         private readonly StreamWriter _streamWriter;
         private bool _ownsStreams;
