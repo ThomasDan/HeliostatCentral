@@ -11,6 +11,131 @@ namespace HeliostatCentral.DAL
 {
     public class TextBasedDAL : iHeliostatDataAccessLayer
     {
+        private string relativePath;
+        private TextWriter textWriter;
+
+        private readonly StreamReader _streamReader;
+        private readonly StreamWriter _streamWriter;
+        private bool _ownsStreams;
+
+        public TextBasedDAL(string? filePath = null)
+        {
+            if (filePath == null)
+            {
+                string path = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
+                FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                _streamReader = new StreamReader(fs);
+                _streamWriter = new StreamWriter(fs) { AutoFlush = true };
+                _ownsStreams = true;
+            }
+            else
+            {
+                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                _streamReader = new StreamReader(fs);
+                _streamWriter = new StreamWriter(fs) { AutoFlush = true };
+                _ownsStreams = true;
+            }
+        }
+
+        public TextBasedDAL(StreamReader streamReader, StreamWriter streamWriter)
+        {
+            _streamReader = streamReader;
+            _streamWriter = streamWriter;
+            _ownsStreams = false;
+        }
+
+        public List<string> ReadAllLines()
+        {
+            List<string> lines = new List<string>();
+            string line;
+            while ((line = _streamReader.ReadLine()) != null)
+            {
+                lines.Add(line);
+            }
+            return lines;
+        }
+
+        public List<HeliostatRecording> LoadRecordings()
+        {
+            List<HeliostatRecording> hrs = new List<HeliostatRecording>();
+            List<string> lines = ReadAllLines();
+            foreach (string line in lines)
+            {
+                HeliostatRecording hr = ConvertDataToHeliostat(line);
+                hrs.Add(hr);
+            }
+            return hrs;
+        }
+
+        public HeliostatRecording ConvertDataToHeliostat(string data)
+        {
+            string[] dataSeparated = data.Split(',');
+            int hori = 0, vert = 0, light = 0;
+            DateTime stamp = DateTime.Now;
+            bool valid = true;
+            try
+            {
+                hori = Convert.ToInt32(dataSeparated[0]);
+                vert = Convert.ToInt32(dataSeparated[1]);
+                light = Convert.ToInt32(dataSeparated[2]);
+                stamp = Convert.ToDateTime(dataSeparated[3]);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                valid = false;
+            }
+            return new HeliostatRecording(hori, vert, light, stamp, valid);
+        }
+
+        public void SaveRecording(List<HeliostatRecording> hrs)
+        {
+            if (_streamWriter == null)
+                throw new InvalidOperationException("StreamWriter is not initialized.");
+
+            List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
+            if (existingRecords.Count > 0)
+            {
+                _streamWriter.WriteLine(String.Join('\n', existingRecords));
+            }
+
+            foreach (HeliostatRecording hr in hrs)
+            {
+                if (hr.IsValid)
+                {
+                    _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+                }
+                else
+                {
+                    Console.WriteLine("Attempted to insert invalid record: " + hr.ToString());
+                }
+            }
+            _streamWriter.Flush(); // Ensure all data is written to the underlying stream
+        }
+
+        public void Dispose()
+        {
+            if (_ownsStreams)
+            {
+                _streamReader?.Dispose();
+                _streamWriter?.Dispose();
+            }
+        }
+
+        ~TextBasedDAL()
+        {
+            Dispose();
+        }
+    }
+}
+
+
+/*
+OLD CODE
+namespace HeliostatCentral.DAL
+{
+    public class TextBasedDAL : iHeliostatDataAccessLayer
+    {
         string relativePath;
 
         public TextBasedDAL()
@@ -114,3 +239,4 @@ namespace HeliostatCentral.DAL
         }
     }
 }
+*/
