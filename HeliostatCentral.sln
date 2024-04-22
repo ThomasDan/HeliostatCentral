@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HeliostatCentral", "HeliostatCentral.csproj", "{18F3E866-9F7B-4211-A5FB-A2338653156B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HC-TestEnvironment", "..\HeliostatCentralUTest\HC-TestEnvironment.csproj", "{7EF94FE8-6F5D-4DCA-84B5-A1C5CF6AA98D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{18F3E866-9F7B-4211-A5FB-A2338653156B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18F3E866-9F7B-4211-A5FB-A2338653156B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18F3E866-9F7B-4211-A5FB-A2338653156B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EF94FE8-6F5D-4DCA-84B5-A1C5CF6AA98D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EF94FE8-6F5D-4DCA-84B5-A1C5CF6AA98D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EF94FE8-6F5D-4DCA-84B5-A1C5CF6AA98D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EF94FE8-6F5D-4DCA-84B5-A1C5CF6AA98D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

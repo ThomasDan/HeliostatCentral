@@ -94,16 +94,15 @@ namespace HeliostatCentral.DAL
                 // We do this, because as soon as we open up the file and start writing, the existing lines are overwritten.
             }
 
-            // The (probable) use of WriteLine above, ensures we are already on a new line, and therefore do not want to use WriteLine again,
-            //      else we make a new line after this line, which will cause issues as it tries to load the empty line ("") as heliostat data.
+           // Here we write the new 
             foreach (HeliostatRecording hr in hrs) {
                 if (hr.IsValid)
                 {
                     sw.WriteLine(
-                    hr.HorizontalDegrees.ToString() + "," +
-                    hr.VerticalDegrees.ToString() + "," +
-                    hr.LightLevel.ToString() + "," +
-                    hr.DateTimeStamp.ToString()
+                        hr.HorizontalDegrees.ToString() + "," +
+                        hr.VerticalDegrees.ToString() + "," +
+                        hr.LightLevel.ToString() + "," +
+                        hr.DateTimeStamp.ToString()
                     );
                 } else
                 {
