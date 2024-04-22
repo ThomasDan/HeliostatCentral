@@ -18,6 +18,7 @@ namespace HeliostatCentral.DAL
         private readonly StreamWriter _streamWriter;
         private bool _ownsStreams;
 
+        // Constructor for production use
         public TextBasedDAL(string? filePath = null)
         {
             if (filePath == null)
@@ -37,6 +38,7 @@ namespace HeliostatCentral.DAL
             }
         }
 
+        // Constructor for testing purposes
         public TextBasedDAL(StreamReader streamReader, StreamWriter streamWriter)
         {
             _streamReader = streamReader;
@@ -44,6 +46,7 @@ namespace HeliostatCentral.DAL
             _ownsStreams = false;
         }
 
+        // ReadAllLines method reads all lines from the text file
         public List<string> ReadAllLines()
         {
             List<string> lines = new List<string>();
@@ -55,6 +58,7 @@ namespace HeliostatCentral.DAL
             return lines;
         }
 
+        // LoadRecordings method reads the text file and converts the data to HeliostatRecording objects
         public List<HeliostatRecording> LoadRecordings()
         {
             List<HeliostatRecording> hrs = new List<HeliostatRecording>();
@@ -67,6 +71,7 @@ namespace HeliostatCentral.DAL
             return hrs;
         }
 
+        // ConvertDataToHeliostat method converts a string of data to a HeliostatRecording object
         public HeliostatRecording ConvertDataToHeliostat(string data)
         {
             string[] dataSeparated = data.Split(',');
@@ -88,6 +93,7 @@ namespace HeliostatCentral.DAL
             return new HeliostatRecording(hori, vert, light, stamp, valid);
         }
 
+        // SaveRecording method writes the HeliostatRecording objects to the text file
         public void SaveRecording(List<HeliostatRecording> hrs)
         {
             if (_streamWriter == null)
@@ -122,6 +128,7 @@ namespace HeliostatCentral.DAL
             }
         }
 
+        // Destructor to ensure resources are released when the object is garbage collected 
         ~TextBasedDAL()
         {
             Dispose();
