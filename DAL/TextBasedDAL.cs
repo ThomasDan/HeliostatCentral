@@ -50,7 +50,10 @@ namespace HeliostatCentral.DAL
             string line;
             while ((line = _streamReader.ReadLine()) != null)
             {
-                lines.Add(line);
+                if (line.Length > 0)
+                {
+                    lines.Add(line);
+                }
             }
             return lines;
         }
@@ -106,7 +109,16 @@ namespace HeliostatCentral.DAL
             {
                 if (hr.IsValid)
                 {
-                    _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+                    // If it is the last element, we want it to use "Write()" instead of writeline, since previous "writeline" already created a fresh line.
+                    //    Else the text file will have a spare empty line.
+                    if (hrs.Last().DateTimeStamp != hr.DateTimeStamp)
+                    {
+                        _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+
+                    } else
+                    {
+                        _streamWriter.Write($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+                    }
                 }
                 else
                 {
