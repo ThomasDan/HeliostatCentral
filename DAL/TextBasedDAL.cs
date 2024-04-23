@@ -19,7 +19,13 @@ namespace HeliostatCentral.DAL
         // Constructor for production use
         public TextBasedDAL(string? _filePath = null)
         {
-            if (_filePath == null)
+            string path = filePath ?? AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
+            //FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            _streamReader = new StreamReader(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite));
+            _streamWriter = new StreamWriter(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) { AutoFlush = true };
+            _ownsStreams = true;
+            /*
+            if (filePath == null)
             {
                 filePath = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
                 FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
@@ -35,6 +41,7 @@ namespace HeliostatCentral.DAL
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
             }
+            */
         }
 
         // Constructor for testing purposes
@@ -105,9 +112,20 @@ namespace HeliostatCentral.DAL
                 throw new InvalidOperationException("StreamWriter is not initialized.");
             List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
 
+            List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
+           
+            _streamWriter.BaseStream.SetLength(0); 
+            _streamWriter.BaseStream.Position = 0;
+            
+            /* Why this?
             if (existingRecords.Count > 0)
             {
                 _streamWriter.WriteLine(String.Join('\n', existingRecords));
+            }
+            and not this? */ 
+            foreach (var record in existingRecords)
+            {
+                _streamWriter.WriteLine(record);
             }
 
             foreach (HeliostatRecording hr in hrs)
@@ -130,6 +148,7 @@ namespace HeliostatCentral.DAL
                     Console.WriteLine("Attempted to insert invalid record: " + hr.ToString());
                 }
             }
+            
             _streamWriter.Flush(); // Ensure all data is written to the underlying stream
         }
 
