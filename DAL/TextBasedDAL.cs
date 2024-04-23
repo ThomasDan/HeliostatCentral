@@ -19,12 +19,6 @@ namespace HeliostatCentral.DAL
         // Constructor for production use
         public TextBasedDAL(string? _filePath = null)
         {
-            string path = filePath ?? AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
-            //FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
-            _streamReader = new StreamReader(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite));
-            _streamWriter = new StreamWriter(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) { AutoFlush = true };
-            _ownsStreams = true;
-            /*
             if (filePath == null)
             {
                 filePath = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
@@ -41,7 +35,6 @@ namespace HeliostatCentral.DAL
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
             }
-            */
         }
 
         // Constructor for testing purposes
@@ -111,6 +104,7 @@ namespace HeliostatCentral.DAL
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
             List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
+            
             _streamWriter.BaseStream.SetLength(0); 
             _streamWriter.BaseStream.Position = 0;
             
