@@ -111,9 +111,6 @@ namespace HeliostatCentral.DAL
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
             List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
-
-            List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
-           
             _streamWriter.BaseStream.SetLength(0); 
             _streamWriter.BaseStream.Position = 0;
             
