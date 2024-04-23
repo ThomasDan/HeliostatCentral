@@ -26,19 +26,18 @@ namespace HeliostatCentral.Handlers
 
         public HeliostatRecording ConvertStringToHeliostatRecording(string message)
         {
-            string[] splitString = message.Split(",");
-
-            string horizontalString = splitString[0];
-            string verticalString = splitString[1];
-            string lightString = splitString[2];
-
             int horizontal = 0;
             int vertical = 0;
             int light = 0;
             bool valid = true;
-
             try
             {
+                string[] splitString = message.Split(",");
+
+                string horizontalString = splitString[0];
+                string verticalString = splitString[1];
+                string lightString = splitString[2];
+            
                 // Ideally, each value shoyld have a Try around itself, but this is fine
                 horizontal = int.Parse(horizontalString);
                 vertical = int.Parse(verticalString);

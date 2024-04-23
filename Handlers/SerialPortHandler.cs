@@ -29,8 +29,6 @@ namespace HeliostatCentral.Handlers
 
             receivedMessages = new List<string>();
             receivedMessagesLock = new object();
-
-            serialPort.Open();
         }
 
         /// <summary>
@@ -68,10 +66,15 @@ namespace HeliostatCentral.Handlers
 
         public void Initialize()
         {
-            Thread receiver = new Thread(receiveCommunication);
-            receiver.Start();
+            serialPort.Open();
 
             // Ideally, there would be a serialPort.Close(); call for when the program ends. But the program doesn't end.
+        }
+
+        public void InitializeReceiver()
+        {
+            Thread receiver = new Thread(receiveCommunication);
+            receiver.Start();
         }
 
         /// <summary>
@@ -79,13 +82,14 @@ namespace HeliostatCentral.Handlers
         /// </summary>
         private void receiveCommunication()
         {
+            string newMessage = "";
             while (true)
             {
                 try
                 {
                     if (Monitor.TryEnter(receivedMessagesLock))
                     {
-                        string newMessage = serialPort.ReadLine();
+                        newMessage = serialPort.ReadLine();
                         try
                         {
                             receivedMessages.Add(newMessage);
@@ -99,7 +103,7 @@ namespace HeliostatCentral.Handlers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine(e.ToString());
+                    Console.WriteLine(e.ToString() + "\n" + newMessage);
                 }
                 Thread.Sleep(50);
             }

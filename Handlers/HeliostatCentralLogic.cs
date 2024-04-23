@@ -27,7 +27,13 @@ namespace HeliostatCentral.Handlers
 
         public void Initialize()
         {
-            //sunTrackerComm.Initialize();
+            sunTrackerComm.Initialize();
+            sunTrackerComm.InitializeReceiver();
+            foreach ( iCommunicate iCommunicate in this.solarPanelComms )
+            {
+                iCommunicate.Initialize();
+            }
+
             thread.Start();
         }
 
@@ -37,19 +43,9 @@ namespace HeliostatCentral.Handlers
             List<HeliostatRecording> unsavedHRs;
             List<HeliostatRecording> hrs;
 
-            hrs = new List<HeliostatRecording>()
-                {
-                    new HeliostatRecording(100, 150, 370, DateTime.Now, true),
-                    new HeliostatRecording(50, 100, 370, DateTime.Now.AddSeconds(5), true),
-                    new HeliostatRecording(70, 130, 370, DateTime.Now.AddSeconds(10), true),
-                    new HeliostatRecording(130, 140, 370, DateTime.Now.AddSeconds(15), true),
-                };
-            dal.SaveRecording(hrs);
-
             while (true)
             {
                 // Here we acquire the latest recording(s) from the serial port
-                /*
                 rawReceivedMessages = sunTrackerComm.GetMessages();
                 unsavedHRs = new List<HeliostatRecording>();
                 foreach(string message in rawReceivedMessages)
@@ -64,13 +60,10 @@ namespace HeliostatCentral.Handlers
                     dal.SaveRecording(unsavedHRs);
                     // Thus we have updated the database
                 }
-                */
-
+                //*/
                 
-
                 // Here we get all freshly-updated heliostat records
                 hrs = dal.LoadRecordings();
-                Console.WriteLine(hrs.Count());
                 if (hrs.Count > 0)
                 {
                     // Then we figure out which of the recent records seem like the best potential instruction for the Heliostat

@@ -18,8 +18,8 @@ namespace HeliostatCentral.Models
 
         public HeliostatRecording(int horizontalDegrees, int verticalDegrees, int lightLevel, DateTime dateTimeStamp, bool isValid)
         {
-            this.HorizontalDegrees = horizontalDegrees;
-            this.VerticalDegrees = verticalDegrees;
+            this.HorizontalDegrees = horizontalDegrees < 181 ? horizontalDegrees : 180;
+            this.VerticalDegrees = verticalDegrees < 181 ? verticalDegrees : 180;
             this.LightLevel = lightLevel;
             this.DateTimeStamp = dateTimeStamp;
             this.IsValid = isValid;

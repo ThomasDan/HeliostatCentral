@@ -10,17 +10,26 @@ namespace HeliostatCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-            SerialPortHandler tracker = null;// new SerialPortHandler("Sun Tracker");
+
+            SerialPortHandler tracker = new SerialPortHandler("Sun Tracker");
             List<iCommunicate> solarPanels = new List<iCommunicate>() { new SerialPortHandler("Solar Panel") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
             HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, tracker, solarPanels, dal);
             logic.Initialize();
+            /*
 
-            //List<HeliostatRecording> hrs = GenerateData(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0));
-
-            //dal.SaveRecording(hrs);
+            List<HeliostatRecording> hrs = GenerateData(new TimeSpan(12, 0, 0), new TimeSpan(16, 0, 0));
             
+            hrs = new List<HeliostatRecording>()
+                {
+                    new HeliostatRecording(100, 150, 370, DateTime.Now, true),
+                    new HeliostatRecording(50, 100, 370, DateTime.Now.AddSeconds(5), true),
+                    new HeliostatRecording(70, 130, 370, DateTime.Now.AddSeconds(10), true),
+                    new HeliostatRecording(130, 140, 370, DateTime.Now.AddSeconds(15), true),
+                };
+            dal.SaveRecording(hrs);
+            */            
         }
 
         /*
