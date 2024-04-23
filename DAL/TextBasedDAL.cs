@@ -18,6 +18,12 @@ namespace HeliostatCentral.DAL
         // Constructor for production use
         public TextBasedDAL(string? filePath = null)
         {
+            string path = filePath ?? AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
+            //FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+            _streamReader = new StreamReader(new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite));
+            _streamWriter = new StreamWriter(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite)) { AutoFlush = true };
+            _ownsStreams = true;
+            /*
             if (filePath == null)
             {
                 string path = filePath ?? AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
@@ -33,6 +39,7 @@ namespace HeliostatCentral.DAL
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
             }
+            */
         }
 
         // Constructor for testing purposes
