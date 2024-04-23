@@ -8,15 +8,17 @@ using System.IO.Ports;
 
 namespace HeliostatCentral.Handlers
 {
-    class SerialPortHandler : iCommunicateWithHeliostat
+    class SerialPortHandler : iCommunicate
     {
         SerialPort serialPort;
 
         List<string> receivedMessages;
         object receivedMessagesLock;
+        string name;
 
-        public SerialPortHandler() 
+        public SerialPortHandler(string _name) 
         {
+            name = _name;
             serialPort = new SerialPort();
             serialPort.PortName = GetPortName();
 
@@ -33,23 +35,29 @@ namespace HeliostatCentral.Handlers
         /// </summary>
         private string GetPortName()
         {
-            string[] portNames = SerialPort.GetPortNames();
+            bool validPortFound = false;
             int choice = 0;
-            if (portNames.Count() > 1) {
-                Console.WriteLine("Ports:");
-                for (int i = 0; i < portNames.Length; i++)
+            string[] portNames = new string[0];
+            while (!validPortFound)
+            {
+                portNames = SerialPort.GetPortNames();
+                if (portNames.Count() > 0)
                 {
-                    Console.WriteLine(" " + (i + 1) + ". " + portNames[i]);
-                }
+                    Console.WriteLine($"Ports for {name}:");
+                    for (int i = 0; i < portNames.Length; i++)
+                    {
+                        Console.WriteLine(" " + (i + 1) + ". " + portNames[i]);
+                    }
 
-                Console.Write("Enter Serial Port Number: ");
-                choice = Convert.ToInt32(Console.ReadLine()) - 1;
-            } else if (portNames.Count() == 1)
-            {
-                Console.WriteLine("Automatically chose port " + portNames[0] + " (only option)");
-            } else
-            {
-                throw new IOException("no serial port found");
+                    Console.Write("Enter Serial Port Number: ");
+                    choice = Convert.ToInt32(Console.ReadLine()) - 1;
+                    validPortFound = true;
+                }
+                else
+                {
+                    Console.WriteLine($"...No serial port found for {name} ...");
+                    Thread.Sleep(2000);
+                }
             }
 
             return portNames[choice];
@@ -65,7 +73,7 @@ namespace HeliostatCentral.Handlers
         }
 
         /// <summary>
-        /// Infinitely loop that receives any messages waiting in the serialPort every half second
+        /// Infinite loop that receives any messages waiting in the serialPort 20 times per second
         /// </summary>
         private void receiveCommunication()
         {
@@ -91,7 +99,7 @@ namespace HeliostatCentral.Handlers
                 {
                     Console.WriteLine(e.ToString());
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(50);
             }
         }
 

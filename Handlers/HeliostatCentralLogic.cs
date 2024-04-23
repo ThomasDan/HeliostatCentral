@@ -12,20 +12,22 @@ namespace HeliostatCentral.Handlers
     {
         private Thread thread;
         private iInterpretHeliostatCommunication interpreter;
-        private iCommunicateWithHeliostat comm;
+        private iCommunicate sunTrackerComm;
+        private List<iCommunicate> solarPanelComms;
         private iHeliostatDataAccessLayer dal;
 
-        public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp,  iCommunicateWithHeliostat _comm, iHeliostatDataAccessLayer _dal)
+        public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp,  iCommunicate _sunTrackerComm, List<iCommunicate> _solarPanelComms, iHeliostatDataAccessLayer _dal)
         {
             this.interpreter = _interp;
-            this.comm = _comm;
+            this.sunTrackerComm = _sunTrackerComm;
+            this.solarPanelComms = _solarPanelComms;
             this.dal = _dal;
             this.thread = new Thread(Run);
         }
 
         public void Initialize()
         {
-            comm.Initialize();
+            sunTrackerComm.Initialize();
             thread.Start();
         }
 
@@ -37,7 +39,7 @@ namespace HeliostatCentral.Handlers
             while(true)
             {
                 // Here we acquire the latest recording(s) from the serial port
-                rawReceivedMessages = comm.GetMessages();
+                rawReceivedMessages = sunTrackerComm.GetMessages();
                 unsavedHRs = new List<HeliostatRecording>();
                 foreach(string message in rawReceivedMessages)
                 {
@@ -52,8 +54,6 @@ namespace HeliostatCentral.Handlers
                     // Thus we have updated the database
                 }
 
-
-
                 // Here we get all freshly-updated heliostat records
                 hrs = dal.LoadRecordings();
 
@@ -66,8 +66,11 @@ namespace HeliostatCentral.Handlers
 
                     // Then we convert the Recording into a string instruction
                     string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
-                    // ..and send the instruction to the Heliostat
-                    comm.SendCommunication(instruction);
+                    // ..and send the instruction to the Solar Panels
+                    foreach(iCommunicate solarPanel in solarPanelComms)
+                    {
+                        solarPanel.SendCommunication(instruction);
+                    }
                 }
 
                 Thread.Sleep(5000);

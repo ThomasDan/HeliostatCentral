@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Interfaces
 {
-    public interface iCommunicateWithHeliostat
+    public interface iCommunicate
     {
         public void Initialize();
         public List<string> GetMessages();

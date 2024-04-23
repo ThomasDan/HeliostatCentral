@@ -1,5 +1,6 @@
 ﻿using HeliostatCentral.DAL;
 using HeliostatCentral.Handlers;
+using HeliostatCentral.Interfaces;
 using HeliostatCentral.Models;
 
 namespace HeliostatCentral
@@ -9,10 +10,11 @@ namespace HeliostatCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-            SerialPortHandler sp = new SerialPortHandler();
+            SerialPortHandler tracker = new SerialPortHandler("Sun Tracker");
+            List<iCommunicate> solarPanels = new List<iCommunicate>() { new SerialPortHandler("Solar Panel") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
-            HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, sp, dal);
+            HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, tracker, solarPanels, dal);
             logic.Initialize();
 
             //List<HeliostatRecording> hrs = GenerateData(new TimeSpan(8, 0, 0), new TimeSpan(16, 0, 0));

@@ -13,11 +13,13 @@ namespace HeliostatCentral.Handlers
         public string ConvertHeliostatRecordingToString(HeliostatRecording hr)
         {
             StringBuilder sb = new StringBuilder();
+            sb.Append('<');
             sb.Append(hr.HorizontalDegrees);
             sb.Append(',');
             sb.Append(hr.VerticalDegrees);
             sb.Append(',');
             sb.Append(hr.LightLevel);
+            sb.Append('>');
 
             return sb.ToString();
         }
