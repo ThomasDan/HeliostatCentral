@@ -10,7 +10,7 @@ namespace HeliostatCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-            SerialPortHandler tracker = new SerialPortHandler("Sun Tracker");
+            SerialPortHandler tracker = null;// new SerialPortHandler("Sun Tracker");
             List<iCommunicate> solarPanels = new List<iCommunicate>() { new SerialPortHandler("Solar Panel") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 

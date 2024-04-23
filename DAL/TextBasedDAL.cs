@@ -14,21 +14,23 @@ namespace HeliostatCentral.DAL
         private readonly StreamReader _streamReader;
         private readonly StreamWriter _streamWriter;
         private bool _ownsStreams;
+        private readonly string filePath;
 
         // Constructor for production use
-        public TextBasedDAL(string? filePath = null)
+        public TextBasedDAL(string? _filePath = null)
         {
-            if (filePath == null)
+            if (_filePath == null)
             {
-                string path = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
-                FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                filePath = AppDomain.CurrentDomain.BaseDirectory + "recordings/record.txt";
+                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 _streamReader = new StreamReader(fs);
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
             }
             else
             {
-                FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                filePath = _filePath;
+                FileStream fs = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 _streamReader = new StreamReader(fs);
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
@@ -46,6 +48,8 @@ namespace HeliostatCentral.DAL
         // ReadAllLines method reads all lines from the text file
         public List<string> ReadAllLines()
         {
+            _streamWriter.Flush();
+            _streamReader.BaseStream.Position = 0;
             List<string> lines = new List<string>();
             string line;
             while ((line = _streamReader.ReadLine()) != null)
@@ -55,6 +59,7 @@ namespace HeliostatCentral.DAL
                     lines.Add(line);
                 }
             }
+
             return lines;
         }
 
@@ -98,8 +103,8 @@ namespace HeliostatCentral.DAL
         {
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
-
             List<string> existingRecords = ReadAllLines();  // Ensure this method does not rely on uninitialized objects
+
             if (existingRecords.Count > 0)
             {
                 _streamWriter.WriteLine(String.Join('\n', existingRecords));
@@ -113,11 +118,11 @@ namespace HeliostatCentral.DAL
                     //    Else the text file will have a spare empty line.
                     if (hrs.Last().DateTimeStamp != hr.DateTimeStamp)
                     {
-                        _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+                        _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
 
                     } else
                     {
-                        _streamWriter.Write($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp}");
+                        _streamWriter.Write($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
                     }
                 }
                 else

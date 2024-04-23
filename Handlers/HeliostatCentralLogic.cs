@@ -27,7 +27,7 @@ namespace HeliostatCentral.Handlers
 
         public void Initialize()
         {
-            sunTrackerComm.Initialize();
+            //sunTrackerComm.Initialize();
             thread.Start();
         }
 
@@ -39,6 +39,7 @@ namespace HeliostatCentral.Handlers
             while(true)
             {
                 // Here we acquire the latest recording(s) from the serial port
+                /*
                 rawReceivedMessages = sunTrackerComm.GetMessages();
                 unsavedHRs = new List<HeliostatRecording>();
                 foreach(string message in rawReceivedMessages)
@@ -53,10 +54,17 @@ namespace HeliostatCentral.Handlers
                     dal.SaveRecording(unsavedHRs);
                     // Thus we have updated the database
                 }
+                */
+
+                hrs = new List<HeliostatRecording>()
+                {
+                    new HeliostatRecording(100, 100, 370, DateTime.Now, true)
+                };
+                dal.SaveRecording(hrs);
 
                 // Here we get all freshly-updated heliostat records
                 hrs = dal.LoadRecordings();
-
+                Console.WriteLine(hrs.Count());
                 if (hrs.Count > 0)
                 {
                     // Then we figure out which of the recent records seem like the best potential instruction for the Heliostat
@@ -67,7 +75,7 @@ namespace HeliostatCentral.Handlers
                     // Then we convert the Recording into a string instruction
                     string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
                     // ..and send the instruction to the Solar Panels
-                    foreach(iCommunicate solarPanel in solarPanelComms)
+                    foreach (iCommunicate solarPanel in solarPanelComms)
                     {
                         solarPanel.SendCommunication(instruction);
                     }
