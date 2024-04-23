@@ -26,8 +26,11 @@ namespace HeliostatCentral.Handlers
             serialPort.BaudRate = 9600;
             // Timing out in 500 miliseconds is arbitrary
             serialPort.ReadTimeout = 500;
+
             receivedMessages = new List<string>();
             receivedMessagesLock = new object();
+
+            serialPort.Open();
         }
 
         /// <summary>
@@ -66,7 +69,6 @@ namespace HeliostatCentral.Handlers
         public void Initialize()
         {
             Thread receiver = new Thread(receiveCommunication);
-            serialPort.Open();
             receiver.Start();
 
             // Ideally, there would be a serialPort.Close(); call for when the program ends. But the program doesn't end.
