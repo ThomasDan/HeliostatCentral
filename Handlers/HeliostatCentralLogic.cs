@@ -56,7 +56,7 @@ namespace HeliostatCentral.Handlers
                 if (unsavedHRs.Count > 0)
                 {
                     // Then we save the HeliostatRecording to the database
-                    dal.SaveRecording(unsavedHRs);
+                    dal.SaveRecordings(unsavedHRs);
                     // Thus we have updated the database
                 }
                 //*/

@@ -48,7 +48,7 @@ namespace HeliostatCentral.DAL
         // ReadAllLines method reads all lines from the text file
         public List<string> ReadAllLines()
         {
-            _streamWriter.Flush();
+            // Here we make sure the Reader is reading from the first line of the file
             _streamReader.BaseStream.Position = 0;
             List<string> lines = new List<string>();
             string line;
@@ -85,6 +85,7 @@ namespace HeliostatCentral.DAL
             bool valid = true;
             try
             {
+                // Ideally, each of these would have their own "try-catch"
                 hori = Convert.ToInt32(dataSeparated[0]);
                 vert = Convert.ToInt32(dataSeparated[1]);
                 light = Convert.ToInt32(dataSeparated[2]);
@@ -99,8 +100,8 @@ namespace HeliostatCentral.DAL
             return new HeliostatRecording(hori, vert, light, stamp, valid);
         }
 
-        // SaveRecording method writes the HeliostatRecording objects to the text file
-        public void SaveRecording(List<HeliostatRecording> hrs)
+        // SaveRecordings method writes the HeliostatRecording objects to the text file
+        public void SaveRecordings(List<HeliostatRecording> hrs)
         {
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
@@ -109,24 +110,23 @@ namespace HeliostatCentral.DAL
             _streamWriter.BaseStream.SetLength(0); 
             _streamWriter.BaseStream.Position = 0;
             
-            /* Why this?
-            if (existingRecords.Count > 0)
-            {
-                _streamWriter.WriteLine(String.Join('\n', existingRecords));
-            }
-            and not this? */ 
+            // Here we overwrite all the existing records with the existing records, to ensure that the StreamWriter is at the bottom and at a new line
+            // .. this is perhaps quite a waste of processing resources, and perhaps slightly more prone to data corruption..
+            // .. but good enough for our prototype.
             foreach (var record in existingRecords)
             {
                 _streamWriter.WriteLine(record);
             }
 
-            foreach (HeliostatRecording hr in hrs)
+            HeliostatRecording hr;
+            for (int i = 0; i < hrs.Count(); i++)
             {
+                hr = hrs[i];
                 if (hr.IsValid)
                 {
                     // If it is the last element, we want it to use "Write()" instead of writeline, since previous "writeline" already created a fresh line.
                     //    Else the text file will have a spare empty line.
-                    if (hrs.Last().DateTimeStamp != hr.DateTimeStamp)
+                    if (i < hrs.Count())
                     {
                         _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
 
