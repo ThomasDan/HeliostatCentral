@@ -12,11 +12,11 @@ namespace HeliostatCentral.Handlers
     {
         private Thread thread;
         private iInterpretHeliostatCommunication interpreter;
-        private iCommunicate sunTrackerComm;
-        private List<iCommunicate> solarPanelComms;
+        private iReceiveCommunication sunTrackerComm;
+        private List<iSendCommunication> solarPanelComms;
         private iHeliostatDataAccessLayer dal;
 
-        public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp,  iCommunicate _sunTrackerComm, List<iCommunicate> _solarPanelComms, iHeliostatDataAccessLayer _dal)
+        public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp, iReceiveCommunication _sunTrackerComm, List<iSendCommunication> _solarPanelComms, iHeliostatDataAccessLayer _dal)
         {
             this.interpreter = _interp;
             this.sunTrackerComm = _sunTrackerComm;
@@ -28,10 +28,9 @@ namespace HeliostatCentral.Handlers
         public void Initialize()
         {
             sunTrackerComm.Initialize();
-            sunTrackerComm.InitializeReceiver();
-            foreach ( iCommunicate iCommunicate in this.solarPanelComms )
+            foreach ( iSendCommunication solarPanel in this.solarPanelComms )
             {
-                iCommunicate.Initialize();
+                solarPanel.Initialize();
             }
 
             thread.Start();
@@ -45,7 +44,7 @@ namespace HeliostatCentral.Handlers
 
             while (true)
             {
-                // Here we acquire the latest recording(s) from the serial port
+                // Here we acquire the latest recordings from the sun tracker
                 rawReceivedMessages = sunTrackerComm.GetMessages();
                 unsavedHRs = new List<HeliostatRecording>();
                 foreach(string message in rawReceivedMessages)
@@ -74,7 +73,7 @@ namespace HeliostatCentral.Handlers
                     // Then we convert the Recording into a string instruction
                     string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
                     // ..and send the instruction to the Solar Panels
-                    foreach (iCommunicate solarPanel in solarPanelComms)
+                    foreach (iSendCommunication solarPanel in solarPanelComms)
                     {
                         solarPanel.SendCommunication(instruction);
                     }

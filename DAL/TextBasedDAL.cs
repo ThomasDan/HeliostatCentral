@@ -14,7 +14,7 @@ namespace HeliostatCentral.DAL
         private readonly StreamReader _streamReader;
         private readonly StreamWriter _streamWriter;
         private bool _ownsStreams;
-        private readonly string filePath;
+        private readonly string? filePath;
 
         // Constructor for production use
         public TextBasedDAL(string? _filePath = null)
@@ -30,7 +30,7 @@ namespace HeliostatCentral.DAL
             else
             {
                 filePath = _filePath;
-                FileStream fs = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+                FileStream fs = new FileStream(filePath!, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
                 _streamReader = new StreamReader(fs);
                 _streamWriter = new StreamWriter(fs) { AutoFlush = true };
                 _ownsStreams = true;
@@ -52,7 +52,7 @@ namespace HeliostatCentral.DAL
             _streamReader.BaseStream.Position = 0;
             List<string> lines = new List<string>();
             string line;
-            while ((line = _streamReader.ReadLine()) != null)
+            while ((line = _streamReader.ReadLine()!) != null)
             {
                 if (line.Length > 0)
                 {
@@ -92,7 +92,8 @@ namespace HeliostatCentral.DAL
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Console.WriteLine($"Error encountered when converting incoming message to HeliostatRecording.\nRaw Data: {data}\nError: {e.Message}");
+                // Invalid HeliostatRecordings are not saved to the database
                 valid = false;
             }
             return new HeliostatRecording(hori, vert, light, stamp, valid);

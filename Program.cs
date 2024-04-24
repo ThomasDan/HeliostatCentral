@@ -11,8 +11,8 @@ namespace HeliostatCentral
         {
             TextBasedDAL dal = new TextBasedDAL();
 
-            SerialPortHandler tracker = new SerialPortHandler("Sun Tracker");
-            List<iCommunicate> solarPanels = new List<iCommunicate>() { new SerialPortHandler("Solar Panel") };
+            SerialPortReceiveHandler tracker = new SerialPortReceiveHandler("Sun Tracker");
+            List<iSendCommunication> solarPanels = new List<iSendCommunication>() { new SerialPortSendHandler("Solar Panel #1") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
             HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, tracker, solarPanels, dal);

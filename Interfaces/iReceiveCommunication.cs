@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace HeliostatCentral.Interfaces
 {
-    public interface iCommunicate
+    public interface iReceiveCommunication
     {
         public void Initialize();
-        public void InitializeReceiver();
         public List<string> GetMessages();
-        public void SendCommunication(string message);
     }
 }
