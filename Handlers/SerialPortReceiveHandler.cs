@@ -23,7 +23,7 @@ namespace HeliostatCentral.Handlers
         public override void Initialize()
         {
             base.Initialize();
-            Thread receiver = new Thread(receiveCommunication);
+            Thread receiver = new Thread(ReceiveCommunication);
             receiver.Start();
         }
 
@@ -31,7 +31,7 @@ namespace HeliostatCentral.Handlers
         /// <summary>
         /// Infinite loop that receives any messages waiting in the serialPort 20 times per second
         /// </summary>
-        private void receiveCommunication()
+        private void ReceiveCommunication()
         {
             string newMessage = "";
             while (true)

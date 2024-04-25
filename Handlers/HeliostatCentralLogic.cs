@@ -11,9 +11,9 @@ namespace HeliostatCentral.Handlers
     public class HeliostatCentralLogic
     {
         private Thread thread;
-        private iInterpretHeliostatCommunication interpreter;
         private iReceiveCommunication sunTrackerComm;
         private List<iSendCommunication> solarPanelComms;
+        private iInterpretHeliostatCommunication interpreter;
         private iHeliostatDataAccessLayer dal;
 
         public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp, iReceiveCommunication _sunTrackerComm, List<iSendCommunication> _solarPanelComms, iHeliostatDataAccessLayer _dal)
@@ -65,7 +65,7 @@ namespace HeliostatCentral.Handlers
                 hrs = dal.LoadRecordings();
                 if (hrs.Count > 0)
                 {
-                    // Then we figure out which of the recent records seem like the best potential instruction for the Heliostat
+                    // Then we figure out which of the recent records seem like the best potential instruction for the Solar Panels
                     HeliostatRecording bestHR = DetermineBestRecording(hrs);
 
                     Console.WriteLine(bestHR.ToString());
@@ -79,7 +79,7 @@ namespace HeliostatCentral.Handlers
                     }
                 }
 
-                Thread.Sleep(5000);
+                Thread.Sleep(2500);
             }
         }
 
