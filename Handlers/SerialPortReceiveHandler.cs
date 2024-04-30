@@ -1,4 +1,4 @@
-﻿using HeliostatCentral.Interfaces;
+﻿using SunTrackerCentral.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO.Ports;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace HeliostatCentral.Handlers
+namespace SunTrackerCentral.Handlers
 {
     public class SerialPortReceiveHandler : SerialPortHandlerBase, iReceiveCommunication
     {

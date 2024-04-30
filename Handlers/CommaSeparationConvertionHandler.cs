@@ -1,16 +1,16 @@
-﻿using HeliostatCentral.Interfaces;
-using HeliostatCentral.Models;
+﻿using SunTrackerCentral.Interfaces;
+using SunTrackerCentral.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.Handlers
+namespace SunTrackerCentral.Handlers
 {
-    public class CommaSeparationConvertionHandler : iInterpretHeliostatCommunication
+    public class CommaSeparationConvertionHandler : iInterpretSunTrackerCommunication
     {
-        public string ConvertHeliostatRecordingToString(HeliostatRecording hr)
+        public string ConvertSunTrackerRecordingToString(SunTrackerRecording hr)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append('<');
@@ -24,7 +24,7 @@ namespace HeliostatCentral.Handlers
             return sb.ToString();
         }
 
-        public HeliostatRecording ConvertStringToHeliostatRecording(string message)
+        public SunTrackerRecording ConvertStringToSunTrackerRecording(string message)
         {
             int horizontal = 0;
             int vertical = 0;
@@ -49,7 +49,7 @@ namespace HeliostatCentral.Handlers
                 valid = false;
             }
 
-            HeliostatRecording hr = new HeliostatRecording(
+            SunTrackerRecording hr = new SunTrackerRecording(
                 horizontalDegrees: horizontal,
                 verticalDegrees: vertical,
                 lightLevel: light,

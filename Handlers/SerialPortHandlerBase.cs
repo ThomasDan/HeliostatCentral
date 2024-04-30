@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.Handlers
+namespace SunTrackerCentral.Handlers
 {
     public abstract class SerialPortHandlerBase
     {

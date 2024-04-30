@@ -1,22 +1,22 @@
-﻿using HeliostatCentral.Interfaces;
-using HeliostatCentral.Models;
+﻿using SunTrackerCentral.Interfaces;
+using SunTrackerCentral.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.Handlers
+namespace SunTrackerCentral.Handlers
 {
-    public class HeliostatCentralLogic
+    public class SunTrackerCentralLogic
     {
         private Thread thread;
         private iReceiveCommunication sunTrackerComm;
         private List<iSendCommunication> solarPanelComms;
-        private iInterpretHeliostatCommunication interpreter;
-        private iHeliostatDataAccessLayer dal;
+        private iInterpretSunTrackerCommunication interpreter;
+        private iSunTrackerDataAccessLayer dal;
 
-        public HeliostatCentralLogic(iInterpretHeliostatCommunication _interp, iReceiveCommunication _sunTrackerComm, List<iSendCommunication> _solarPanelComms, iHeliostatDataAccessLayer _dal)
+        public SunTrackerCentralLogic(iInterpretSunTrackerCommunication _interp, iReceiveCommunication _sunTrackerComm, List<iSendCommunication> _solarPanelComms, iSunTrackerDataAccessLayer _dal)
         {
             this.interpreter = _interp;
             this.sunTrackerComm = _sunTrackerComm;
@@ -39,18 +39,18 @@ namespace HeliostatCentral.Handlers
         private void Run()
         {
             List<string> rawReceivedMessages;
-            List<HeliostatRecording> unsavedHRs;
-            List<HeliostatRecording> hrs;
+            List<SunTrackerRecording> unsavedHRs;
+            List<SunTrackerRecording> hrs;
 
             while (true)
             {
                 // Here we acquire the latest recordings from the sun tracker
                 rawReceivedMessages = sunTrackerComm.GetMessages();
-                unsavedHRs = new List<HeliostatRecording>();
+                unsavedHRs = new List<SunTrackerRecording>();
                 foreach(string message in rawReceivedMessages)
                 {
                     // Then we convert each message (if any) into a HeliostatRecording
-                    HeliostatRecording hr = interpreter.ConvertStringToHeliostatRecording(message);
+                    SunTrackerRecording hr = interpreter.ConvertStringToSunTrackerRecording(message);
                     unsavedHRs.Add(hr);
                 }
                 if (unsavedHRs.Count > 0)
@@ -66,12 +66,12 @@ namespace HeliostatCentral.Handlers
                 if (hrs.Count > 0)
                 {
                     // Then we figure out which of the recent records seem like the best potential instruction for the Solar Panels
-                    HeliostatRecording bestHR = DetermineBestRecording(hrs);
+                    SunTrackerRecording bestHR = DetermineBestRecording(hrs);
 
                     Console.WriteLine(bestHR.ToString());
 
                     // Then we convert the Recording into a string instruction
-                    string instruction = interpreter.ConvertHeliostatRecordingToString(bestHR);
+                    string instruction = interpreter.ConvertSunTrackerRecordingToString(bestHR);
                     // ..and send the instruction to the Solar Panels
                     foreach (iSendCommunication solarPanel in solarPanelComms)
                     {
@@ -88,14 +88,14 @@ namespace HeliostatCentral.Handlers
         /// </summary>
         /// <param name="hrs">All Heliostat Recordings</param>
         /// <returns>The Heliostat Recording with the highest LightLevel</returns>
-        private HeliostatRecording DetermineBestRecording(List<HeliostatRecording> hrs)
+        private SunTrackerRecording DetermineBestRecording(List<SunTrackerRecording> hrs)
         {
             // First we remove all records older than 7 days, as the sun's path has changed significantly since 7 days ago
-            List<HeliostatRecording> latestRecords = hrs.Where(a => a.DateTimeStamp.Date > DateTime.Now.AddDays(-7).Date).ToList();
+            List<SunTrackerRecording> latestRecords = hrs.Where(a => a.DateTimeStamp.Date > DateTime.Now.AddDays(-7).Date).ToList();
 
-            HeliostatRecording bestHR = new HeliostatRecording(0,0,0,DateTime.Now,false);
+            SunTrackerRecording bestHR = new SunTrackerRecording(0,0,0,DateTime.Now,false);
             
-            foreach (HeliostatRecording record in latestRecords)
+            foreach (SunTrackerRecording record in latestRecords)
             {
                 TimeSpan now = DateTime.Now.TimeOfDay;
                 

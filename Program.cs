@@ -1,9 +1,9 @@
-﻿using HeliostatCentral.DAL;
-using HeliostatCentral.Handlers;
-using HeliostatCentral.Interfaces;
-using HeliostatCentral.Models;
+﻿using SunTrackerCentral.DAL;
+using SunTrackerCentral.Handlers;
+using SunTrackerCentral.Interfaces;
+using SunTrackerCentral.Models;
 
-namespace HeliostatCentral
+namespace SunTrackerCentral
 {
     internal class Program
     {
@@ -15,18 +15,18 @@ namespace HeliostatCentral
             List<iSendCommunication> solarPanels = new List<iSendCommunication>() { new SerialPortSendHandler("Solar Panel #1") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
-            HeliostatCentralLogic logic = new HeliostatCentralLogic(csc, tracker, solarPanels, dal);
+            SunTrackerCentralLogic logic = new SunTrackerCentralLogic(csc, tracker, solarPanels, dal);
             logic.Initialize();
             /*
 
-            List<HeliostatRecording> hrs = GenerateData(new TimeSpan(12, 0, 0), new TimeSpan(16, 0, 0));
+            List<SunTrackerRecording> hrs = GenerateData(new TimeSpan(12, 0, 0), new TimeSpan(16, 0, 0));
             
-            hrs = new List<HeliostatRecording>()
+            hrs = new List<SunTrackerRecording>()
                 {
-                    new HeliostatRecording(100, 150, 370, DateTime.Now, true),
-                    new HeliostatRecording(50, 100, 370, DateTime.Now.AddSeconds(5), true),
-                    new HeliostatRecording(70, 130, 370, DateTime.Now.AddSeconds(10), true),
-                    new HeliostatRecording(130, 140, 370, DateTime.Now.AddSeconds(15), true),
+                    new SunTrackerRecording(100, 150, 370, DateTime.Now, true),
+                    new SunTrackerRecording(50, 100, 370, DateTime.Now.AddSeconds(5), true),
+                    new SunTrackerRecording(70, 130, 370, DateTime.Now.AddSeconds(10), true),
+                    new SunTrackerRecording(130, 140, 370, DateTime.Now.AddSeconds(15), true),
                 };
             dal.SaveRecording(hrs);
             */            
@@ -39,9 +39,9 @@ namespace HeliostatCentral
             Min Horisontal : 150 (Øst)
             Max Horisontal : 30 (Vest)
         */
-        static List<HeliostatRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
+        static List<SunTrackerRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
         {
-            List<HeliostatRecording> hrs = new List<HeliostatRecording>();
+            List<SunTrackerRecording> hrs = new List<SunTrackerRecording>();
             TimeSpan currTS = new TimeSpan(sunUp.Ticks);
             DateTime dt = DateTime.Now;
 
@@ -84,7 +84,7 @@ namespace HeliostatCentral
                 // Then we generate a light level
                 light = 150;
 
-                HeliostatRecording hr = new HeliostatRecording(hori, vert, light, hrdt, true);
+                SunTrackerRecording hr = new SunTrackerRecording(hori, vert, light, hrdt, true);
                 Console.WriteLine(hr.ToString());
                 hrs.Add(hr);
             }

@@ -1,5 +1,5 @@
-﻿using HeliostatCentral.Interfaces;
-using HeliostatCentral.Models;
+﻿using SunTrackerCentral.Interfaces;
+using SunTrackerCentral.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.DAL
+namespace SunTrackerCentral.DAL
 {
-    public class TextBasedDAL : iHeliostatDataAccessLayer
+    public class TextBasedDAL : iSunTrackerDataAccessLayer
     {
         private readonly StreamReader _streamReader;
         private readonly StreamWriter _streamWriter;
@@ -63,21 +63,21 @@ namespace HeliostatCentral.DAL
             return lines;
         }
 
-        // LoadRecordings method reads the text file and converts the data to HeliostatRecording objects
-        public List<HeliostatRecording> LoadRecordings()
+        // LoadRecordings method reads the text file and converts the data to SunTrackerRecording objects
+        public List<SunTrackerRecording> LoadRecordings()
         {
-            List<HeliostatRecording> hrs = new List<HeliostatRecording>();
+            List<SunTrackerRecording> hrs = new List<SunTrackerRecording>();
             List<string> lines = ReadAllLines();
             foreach (string line in lines)
             {
-                HeliostatRecording hr = ConvertDataToHeliostat(line);
+                SunTrackerRecording hr = ConvertDataToSunTrackerRecording(line);
                 hrs.Add(hr);
             }
             return hrs;
         }
 
-        // ConvertDataToHeliostat method converts a string of data to a HeliostatRecording object
-        public HeliostatRecording ConvertDataToHeliostat(string data)
+        // ConvertDataToSunTrackerRecording method converts a string of data to a SunTrackerRecording object
+        public SunTrackerRecording ConvertDataToSunTrackerRecording(string data)
         {
             string[] dataSeparated = data.Split(',');
             int hori = 0, vert = 0, light = 0;
@@ -93,15 +93,15 @@ namespace HeliostatCentral.DAL
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error encountered when converting incoming message to HeliostatRecording.\nRaw Data: {data}\nError: {e.Message}");
+                Console.WriteLine($"Error encountered when converting incoming message to SunTrackerRecording.\nRaw Data: {data}\nError: {e.Message}");
                 // Invalid HeliostatRecordings are not saved to the database
                 valid = false;
             }
-            return new HeliostatRecording(hori, vert, light, stamp, valid);
+            return new SunTrackerRecording(hori, vert, light, stamp, valid);
         }
 
-        // SaveRecordings method writes the HeliostatRecording objects to the text file
-        public void SaveRecordings(List<HeliostatRecording> hrs)
+        // SaveRecordings method writes the SunTrackerRecording objects to the text file
+        public void SaveRecordings(List<SunTrackerRecording> hrs)
         {
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
@@ -118,7 +118,7 @@ namespace HeliostatCentral.DAL
                 _streamWriter.WriteLine(record);
             }
 
-            HeliostatRecording hr;
+            SunTrackerRecording hr;
             for (int i = 0; i < hrs.Count(); i++)
             {
                 hr = hrs[i];

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.Interfaces
+namespace SunTrackerCentral.Interfaces
 {
     public interface iReceiveCommunication
     {

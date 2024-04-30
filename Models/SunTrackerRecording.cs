@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HeliostatCentral.Models
+namespace SunTrackerCentral.Models
 {
     // Simple POCO class
-    public class HeliostatRecording
+    public class SunTrackerRecording
     {
         // After creation, these being Records, they remain get-only.
         public int HorizontalDegrees { get; }
@@ -16,7 +16,7 @@ namespace HeliostatCentral.Models
         public DateTime DateTimeStamp { get; }
         public bool IsValid { get; }
 
-        public HeliostatRecording(int horizontalDegrees, int verticalDegrees, int lightLevel, DateTime dateTimeStamp, bool isValid)
+        public SunTrackerRecording(int horizontalDegrees, int verticalDegrees, int lightLevel, DateTime dateTimeStamp, bool isValid)
         {
             this.HorizontalDegrees = horizontalDegrees < 181 ? horizontalDegrees : 180;
             this.VerticalDegrees = verticalDegrees < 181 ? verticalDegrees : 180;
