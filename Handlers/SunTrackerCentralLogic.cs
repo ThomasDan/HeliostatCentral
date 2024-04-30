@@ -49,19 +49,19 @@ namespace SunTrackerCentral.Handlers
                 unsavedHRs = new List<SunTrackerRecording>();
                 foreach(string message in rawReceivedMessages)
                 {
-                    // Then we convert each message (if any) into a HeliostatRecording
+                    // Then we convert each message (if any) into a SunTrackerRecording
                     SunTrackerRecording hr = interpreter.ConvertStringToSunTrackerRecording(message);
                     unsavedHRs.Add(hr);
                 }
                 if (unsavedHRs.Count > 0)
                 {
-                    // Then we save the HeliostatRecording to the database
+                    // Then we save the SunTrackerRecording to the database
                     dal.SaveRecordings(unsavedHRs);
                     // Thus we have updated the database
                 }
                 //*/
-                
-                // Here we get all freshly-updated heliostat records
+
+                // Here we get all freshly-updated SunTracker records
                 hrs = dal.LoadRecordings();
                 if (hrs.Count > 0)
                 {
@@ -86,8 +86,8 @@ namespace SunTrackerCentral.Handlers
         /// <summary>
         /// Looks at the recordings taken from around this time of day in the past 7 days, then returns the one with the highest Light Level
         /// </summary>
-        /// <param name="hrs">All Heliostat Recordings</param>
-        /// <returns>The Heliostat Recording with the highest LightLevel</returns>
+        /// <param name="hrs">All SunTracker Recordings</param>
+        /// <returns>The SunTracker Recording with the highest LightLevel</returns>
         private SunTrackerRecording DetermineBestRecording(List<SunTrackerRecording> hrs)
         {
             // First we remove all records older than 7 days, as the sun's path has changed significantly since 7 days ago

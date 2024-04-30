@@ -94,7 +94,7 @@ namespace SunTrackerCentral.DAL
             catch (Exception e)
             {
                 Console.WriteLine($"Error encountered when converting incoming message to SunTrackerRecording.\nRaw Data: {data}\nError: {e.Message}");
-                // Invalid HeliostatRecordings are not saved to the database
+                // Invalid SunTrackerRecordings are not saved to the database
                 valid = false;
             }
             return new SunTrackerRecording(hori, vert, light, stamp, valid);
