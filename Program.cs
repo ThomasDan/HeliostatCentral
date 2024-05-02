@@ -16,7 +16,7 @@ namespace SunTrackerCentral
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
             SunTrackerCentralLogic logic = new SunTrackerCentralLogic(csc, tracker, solarPanels, dal);
-            logic.Initialize();
+
             /*
 
             List<SunTrackerRecording> hrs = GenerateData(new TimeSpan(12, 0, 0), new TimeSpan(16, 0, 0));
@@ -41,7 +41,7 @@ namespace SunTrackerCentral
         */
         static List<SunTrackerRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
         {
-            List<SunTrackerRecording> hrs = new List<SunTrackerRecording>();
+            List<SunTrackerRecording> strs = new List<SunTrackerRecording>();
             TimeSpan currTS = new TimeSpan(sunUp.Ticks);
             DateTime dt = DateTime.Now;
 
@@ -56,7 +56,7 @@ namespace SunTrackerCentral
             {
                 // Here we generate the timestamp for the recording
                 currTS = currTS.Add(new TimeSpan(0, 0, 5));
-                DateTime hrdt = new DateTime(dt.Year, dt.Month, dt.Day-3, currTS.Hours, currTS.Minutes, currTS.Seconds);
+                DateTime strdt = new DateTime(dt.Year, dt.Month, dt.Day-3, currTS.Hours, currTS.Minutes, currTS.Seconds);
                 
                 currTimeProportion = (((int)currTS.TotalSeconds - (int)sunDown.TotalSeconds) / 5) * -1;
 
@@ -84,12 +84,12 @@ namespace SunTrackerCentral
                 // Then we generate a light level
                 light = 150;
 
-                SunTrackerRecording hr = new SunTrackerRecording(hori, vert, light, hrdt, true);
-                Console.WriteLine(hr.ToString());
-                hrs.Add(hr);
+                SunTrackerRecording str = new SunTrackerRecording(hori, vert, light, strdt, true);
+                Console.WriteLine(str.ToString());
+                strs.Add(str);
             }
 
-            return hrs;
+            return strs;
         }
     }
 }

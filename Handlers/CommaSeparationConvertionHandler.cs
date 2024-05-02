@@ -10,15 +10,15 @@ namespace SunTrackerCentral.Handlers
 {
     public class CommaSeparationConvertionHandler : iInterpretSunTrackerCommunication
     {
-        public string ConvertSunTrackerRecordingToString(SunTrackerRecording hr)
+        public string ConvertSunTrackerRecordingToString(SunTrackerRecording str)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append('<');
-            sb.Append(hr.HorizontalDegrees);
+            sb.Append(str.HorizontalDegrees);
             sb.Append(',');
-            sb.Append(hr.VerticalDegrees);
+            sb.Append(str.VerticalDegrees);
             sb.Append(',');
-            sb.Append(hr.LightLevel);
+            sb.Append(str.LightLevel);
             sb.Append('>');
 
             return sb.ToString();
@@ -49,7 +49,7 @@ namespace SunTrackerCentral.Handlers
                 valid = false;
             }
 
-            SunTrackerRecording hr = new SunTrackerRecording(
+            SunTrackerRecording str = new SunTrackerRecording(
                 horizontalDegrees: horizontal,
                 verticalDegrees: vertical,
                 lightLevel: light,
@@ -57,7 +57,7 @@ namespace SunTrackerCentral.Handlers
                 valid
                 );
 
-            return hr;
+            return str;
         }
     }
 }

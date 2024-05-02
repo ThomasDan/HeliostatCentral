@@ -10,6 +10,6 @@ namespace SunTrackerCentral.Interfaces
     public interface iSunTrackerDataAccessLayer
     {
         public List<SunTrackerRecording> LoadRecordings();
-        public void SaveRecordings(List<SunTrackerRecording> hrs);
+        public void SaveRecordings(List<SunTrackerRecording> strs);
     }
 }

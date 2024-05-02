@@ -66,14 +66,14 @@ namespace SunTrackerCentral.DAL
         // LoadRecordings method reads the text file and converts the data to SunTrackerRecording objects
         public List<SunTrackerRecording> LoadRecordings()
         {
-            List<SunTrackerRecording> hrs = new List<SunTrackerRecording>();
+            List<SunTrackerRecording> strs = new List<SunTrackerRecording>();
             List<string> lines = ReadAllLines();
             foreach (string line in lines)
             {
-                SunTrackerRecording hr = ConvertDataToSunTrackerRecording(line);
-                hrs.Add(hr);
+                SunTrackerRecording str = ConvertDataToSunTrackerRecording(line);
+                strs.Add(str);
             }
-            return hrs;
+            return strs;
         }
 
         // ConvertDataToSunTrackerRecording method converts a string of data to a SunTrackerRecording object
@@ -101,7 +101,7 @@ namespace SunTrackerCentral.DAL
         }
 
         // SaveRecordings method writes the SunTrackerRecording objects to the text file
-        public void SaveRecordings(List<SunTrackerRecording> hrs)
+        public void SaveRecordings(List<SunTrackerRecording> strs)
         {
             if (_streamWriter == null)
                 throw new InvalidOperationException("StreamWriter is not initialized.");
@@ -118,26 +118,26 @@ namespace SunTrackerCentral.DAL
                 _streamWriter.WriteLine(record);
             }
 
-            SunTrackerRecording hr;
-            for (int i = 0; i < hrs.Count(); i++)
+            SunTrackerRecording str;
+            for (int i = 0; i < strs.Count(); i++)
             {
-                hr = hrs[i];
-                if (hr.IsValid)
+                str = strs[i];
+                if (str.IsValid)
                 {
                     // If it is the last element, we want it to use "Write()" instead of writeline, since previous "writeline" already created a fresh line.
                     //    Else the text file will have a spare empty line.
-                    if (i < hrs.Count())
+                    if (i < strs.Count())
                     {
-                        _streamWriter.WriteLine($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
+                        _streamWriter.WriteLine($"{str.HorizontalDegrees},{str.VerticalDegrees},{str.LightLevel},{str.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
 
                     } else
                     {
-                        _streamWriter.Write($"{hr.HorizontalDegrees},{hr.VerticalDegrees},{hr.LightLevel},{hr.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
+                        _streamWriter.Write($"{str.HorizontalDegrees},{str.VerticalDegrees},{str.LightLevel},{str.DateTimeStamp.ToString("dd-MM-yyyy HH:mm:ss")}");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Attempted to insert invalid record: " + hr.ToString());
+                    Console.WriteLine("Attempted to insert invalid record: " + str.ToString());
                 }
             }
             

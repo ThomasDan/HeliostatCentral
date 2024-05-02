@@ -21,11 +21,12 @@ namespace SunTrackerCentral.Handlers
             this.interpreter = _interp;
             this.sunTrackerComm = _sunTrackerComm;
             this.solarPanelComms = _solarPanelComms;
+            Initialize();
             this.dal = _dal;
             this.thread = new Thread(Run);
         }
 
-        public void Initialize()
+        void Initialize()
         {
             sunTrackerComm.Initialize();
             foreach ( iSendCommunication solarPanel in this.solarPanelComms )
@@ -39,39 +40,40 @@ namespace SunTrackerCentral.Handlers
         private void Run()
         {
             List<string> rawReceivedMessages;
-            List<SunTrackerRecording> unsavedHRs;
-            List<SunTrackerRecording> hrs;
+            List<SunTrackerRecording> unsavedSTRs;
+            List<SunTrackerRecording> strs;
 
             while (true)
             {
                 // Here we acquire the latest recordings from the sun tracker
                 rawReceivedMessages = sunTrackerComm.GetMessages();
-                unsavedHRs = new List<SunTrackerRecording>();
+                unsavedSTRs = new List<SunTrackerRecording>();
                 foreach(string message in rawReceivedMessages)
                 {
                     // Then we convert each message (if any) into a SunTrackerRecording
-                    SunTrackerRecording hr = interpreter.ConvertStringToSunTrackerRecording(message);
-                    unsavedHRs.Add(hr);
+                    SunTrackerRecording str = interpreter.ConvertStringToSunTrackerRecording(message);
+                    unsavedSTRs.Add(str);
                 }
-                if (unsavedHRs.Count > 0)
+
+                if (unsavedSTRs.Count > 0)
                 {
                     // Then we save the SunTrackerRecording to the database
-                    dal.SaveRecordings(unsavedHRs);
+                    dal.SaveRecordings(unsavedSTRs);
                     // Thus we have updated the database
                 }
                 //*/
 
                 // Here we get all freshly-updated SunTracker records
-                hrs = dal.LoadRecordings();
-                if (hrs.Count > 0)
+                strs = dal.LoadRecordings();
+                if (strs.Count > 0)
                 {
                     // Then we figure out which of the recent records seem like the best potential instruction for the Solar Panels
-                    SunTrackerRecording bestHR = DetermineBestRecording(hrs);
+                    SunTrackerRecording bestSTR = DetermineBestRecording(strs);
 
-                    Console.WriteLine(bestHR.ToString());
+                    Console.WriteLine(bestSTR.ToString());
 
                     // Then we convert the Recording into a string instruction
-                    string instruction = interpreter.ConvertSunTrackerRecordingToString(bestHR);
+                    string instruction = interpreter.ConvertSunTrackerRecordingToString(bestSTR);
                     // ..and send the instruction to the Solar Panels
                     foreach (iSendCommunication solarPanel in solarPanelComms)
                     {
@@ -86,14 +88,14 @@ namespace SunTrackerCentral.Handlers
         /// <summary>
         /// Looks at the recordings taken from around this time of day in the past 7 days, then returns the one with the highest Light Level
         /// </summary>
-        /// <param name="hrs">All SunTracker Recordings</param>
+        /// <param name="strs">All SunTracker Recordings</param>
         /// <returns>The SunTracker Recording with the highest LightLevel</returns>
-        private SunTrackerRecording DetermineBestRecording(List<SunTrackerRecording> hrs)
+        private SunTrackerRecording DetermineBestRecording(List<SunTrackerRecording> strs)
         {
             // First we remove all records older than 7 days, as the sun's path has changed significantly since 7 days ago
-            List<SunTrackerRecording> latestRecords = hrs.Where(a => a.DateTimeStamp.Date > DateTime.Now.AddDays(-7).Date).ToList();
+            List<SunTrackerRecording> latestRecords = strs.Where(a => a.DateTimeStamp.Date > DateTime.Now.AddDays(-7).Date).ToList();
 
-            SunTrackerRecording bestHR = new SunTrackerRecording(0,0,0,DateTime.Now,false);
+            SunTrackerRecording bestSTR = new SunTrackerRecording(0,0,0,DateTime.Now,false);
             
             foreach (SunTrackerRecording record in latestRecords)
             {
@@ -105,14 +107,14 @@ namespace SunTrackerCentral.Handlers
                     record.DateTimeStamp.TimeOfDay > now.Add(new TimeSpan(0,0,-5))
                     )
                 {
-                    if (record.LightLevel > bestHR.LightLevel)
+                    if (record.LightLevel > bestSTR.LightLevel)
                     {
-                        bestHR = record;
+                        bestSTR = record;
                     }
                 }
             }
 
-            return bestHR;
+            return bestSTR;
         }
     }
 }
