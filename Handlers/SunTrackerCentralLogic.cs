@@ -52,6 +52,7 @@ namespace SunTrackerCentral.Handlers
                 {
                     // Then we convert each message (if any) into a SunTrackerRecording
                     SunTrackerRecording str = interpreter.ConvertStringToSunTrackerRecording(message);
+                    Console.WriteLine("New Recording: " + str.ToString());
                     unsavedSTRs.Add(str);
                 }
 
@@ -70,7 +71,7 @@ namespace SunTrackerCentral.Handlers
                     // Then we figure out which of the recent records seem like the best potential instruction for the Solar Panels
                     SunTrackerRecording bestSTR = DetermineBestRecording(strs);
 
-                    Console.WriteLine(bestSTR.ToString());
+                    Console.WriteLine("Best Recording: " + bestSTR.ToString());
 
                     // Then we convert the Recording into a string instruction
                     string instruction = interpreter.ConvertSunTrackerRecordingToString(bestSTR);
