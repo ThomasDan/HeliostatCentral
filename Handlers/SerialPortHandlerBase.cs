@@ -62,6 +62,18 @@ namespace SunTrackerCentral.Handlers
             return portNames[choice];
         }
 
+        protected void AttemptReconnect()
+        {
+            // Reconnect, in case there is a connection issue of some kind
+            int i = 0;
+            while (!serialPort.IsOpen && i < 40)
+            {
+                i++;
+                serialPort.Open();
+                Thread.Sleep(50);
+            }
+        }
+
         public virtual void Initialize()
         {
             serialPort.Open();

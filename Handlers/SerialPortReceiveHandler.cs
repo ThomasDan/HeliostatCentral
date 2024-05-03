@@ -55,6 +55,7 @@ namespace SunTrackerCentral.Handlers
                 catch (Exception e)
                 {
                     Console.WriteLine(e.ToString() + "\n" + newMessage);
+                    base.AttemptReconnect();
                 }
                 Thread.Sleep(50);
             }
