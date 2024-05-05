@@ -66,11 +66,11 @@ namespace SunTrackerCentral.Handlers
         {
             // Reconnect, in case there is a connection issue of some kind
             int i = 0;
-            while (!serialPort.IsOpen && i < 40)
+            while (!serialPort.IsOpen && i < 600)
             {
                 i++;
                 serialPort.Open();
-                Thread.Sleep(50);
+                Thread.Sleep(200);
             }
         }
 
