@@ -21,9 +21,9 @@ namespace SunTrackerCentral.Handlers
             this.interpreter = _interp;
             this.sunTrackerComm = _sunTrackerComm;
             this.solarPanelComms = _solarPanelComms;
-            Initialize();
             this.dal = _dal;
             this.thread = new Thread(Run);
+            Initialize();
         }
 
         void Initialize()

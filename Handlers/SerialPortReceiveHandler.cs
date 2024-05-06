@@ -27,7 +27,6 @@ namespace SunTrackerCentral.Handlers
             receiver.Start();
         }
 
-
         /// <summary>
         /// Infinite loop that receives any messages waiting in the serialPort 20 times per second
         /// </summary>

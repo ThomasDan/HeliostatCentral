@@ -10,7 +10,6 @@ namespace SunTrackerCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-
             SerialPortReceiveHandler tracker = new SerialPortReceiveHandler("Sun Tracker");
             List<iSendCommunication> solarPanels = new List<iSendCommunication>() { new SerialPortSendHandler("Solar Panel #1") };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
@@ -19,8 +18,12 @@ namespace SunTrackerCentral
 
             /*
 
-            List<SunTrackerRecording> hrs = GenerateData(new TimeSpan(12, 0, 0), new TimeSpan(16, 0, 0));
-            
+            dal.SaveRecordings(hrs);
+
+
+            //List<SunTrackerRecording> hrs = GenerateData(new TimeSpan(4, 0, 0), new TimeSpan(21, 0, 0));
+
+            /*
             hrs = new List<SunTrackerRecording>()
                 {
                     new SunTrackerRecording(100, 150, 370, DateTime.Now, true),
@@ -28,16 +31,15 @@ namespace SunTrackerCentral
                     new SunTrackerRecording(70, 130, 370, DateTime.Now.AddSeconds(10), true),
                     new SunTrackerRecording(130, 140, 370, DateTime.Now.AddSeconds(15), true),
                 };
-            dal.SaveRecording(hrs);
-            */            
+            */
         }
 
         /*
-            Min Vertikal Højde : 175 (Solopgang/Solnedgang)
-            Max Vertikal Højde : 125 (Middag/Høj Sol)
+            Min Vertikal Højde : 180 (Solopgang/Solnedgang)
+            Max Vertikal Højde : 0 (Middag/Høj Sol)
 
-            Min Horisontal : 150 (Øst)
-            Max Horisontal : 30 (Vest)
+            Min Horisontal : 180 (Øst)
+            Max Horisontal : 0 (Vest)
         */
         static List<SunTrackerRecording> GenerateData(TimeSpan sunUp, TimeSpan sunDown)
         {
@@ -56,7 +58,7 @@ namespace SunTrackerCentral
             {
                 // Here we generate the timestamp for the recording
                 currTS = currTS.Add(new TimeSpan(0, 0, 5));
-                DateTime strdt = new DateTime(dt.Year, dt.Month, dt.Day-3, currTS.Hours, currTS.Minutes, currTS.Seconds);
+                DateTime strdt = new DateTime(dt.Year, dt.Month, dt.Day, currTS.Hours, currTS.Minutes, currTS.Seconds);
                 
                 currTimeProportion = (((int)currTS.TotalSeconds - (int)sunDown.TotalSeconds) / 5) * -1;
 
@@ -66,26 +68,24 @@ namespace SunTrackerCentral
                 }
 
                 // Then we generate a proportional horizontal value
-                hori = 30 + (int)(((decimal)120 / (decimal)baseTimeProportion) * currTimeProportion);
+                hori = (int)(((decimal)180 / (decimal)baseTimeProportion) * currTimeProportion);
 
 
                 // Then we generate a proportional vertical value
                 if (currTS.Hours < 12)
                 {
-                    vert = 175 - (int)( 
-                        ((decimal)50 / ((decimal)baseTimeProportion / 2)) * (currTimeProportion - ((decimal)baseTimeProportion / 2))
-                        );
+                    vert = (int)(((decimal)180 / (decimal)baseTimeProportion) * currTimeProportion * 2);
                 } else
                 {
-                    vert = 175 - (50 - (int)(((decimal)50 / (decimal)baseTimeProportion) * (decimal)currTimeProportion) * 2);
+                    vert = 180 - ((int)(((decimal)baseTimeProportion) * (decimal)currTimeProportion) * 2);
                 }
 
 
                 // Then we generate a light level
-                light = 150;
+                light = 800;
 
                 SunTrackerRecording str = new SunTrackerRecording(hori, vert, light, strdt, true);
-                Console.WriteLine(str.ToString());
+                //Console.WriteLine(str.ToString());
                 strs.Add(str);
             }
 
