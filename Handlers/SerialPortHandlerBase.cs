@@ -65,12 +65,23 @@ namespace SunTrackerCentral.Handlers
         protected void AttemptReconnect()
         {
             // Reconnect, in case there is a connection issue of some kind
-            int i = 0;
-            while (!serialPort.IsOpen && i < 600)
+            string? latestError = null;
+            for (int i = 0; !serialPort.IsOpen && i < 600; i++)
             {
-                i++;
-                serialPort.Open();
+                try
+                {
+                    serialPort.Open();
+                }
+                catch (Exception e)
+                {
+                    latestError = e.Message;
+                }
                 Thread.Sleep(200);
+            }
+
+            if (latestError != null)
+            {
+                Console.WriteLine($"Failed to reconnect to {name} after 2 minutes, latest error:\n{latestError}");
             }
         }
 
