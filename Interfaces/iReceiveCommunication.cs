@@ -8,7 +8,10 @@ namespace SunTrackerCentral.Interfaces
 {
     public interface iReceiveCommunication
     {
-        public void Initialize();
-        public List<string> GetMessages();
+        public delegate Task SaveReceivedMessage(string message);
+
+        public void Initialize(SaveReceivedMessage _saveReceivedMessage);
+        //public Task SaveReceivedMessage();
+        //public List<string> GetMessages();
     }
 }

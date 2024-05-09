@@ -10,8 +10,12 @@ namespace SunTrackerCentral
         static void Main(string[] args)
         {
             TextBasedDAL dal = new TextBasedDAL();
-            SerialPortReceiveHandler tracker = new SerialPortReceiveHandler("Sun Tracker");
-            List<iSendCommunication> solarPanels = new List<iSendCommunication>() { new SerialPortSendHandler("Solar Panel #1") };
+            //SerialPortReceiveHandler tracker = new SerialPortReceiveHandler("Sun Tracker");
+            DummyDataReceiver tracker = new DummyDataReceiver();
+            List<iSendCommunication> solarPanels = new List<iSendCommunication>() 
+            { 
+                //new SerialPortSendHandler("Solar Panel #1") 
+            };
             CommaSeparationConvertionHandler csc = new CommaSeparationConvertionHandler();
 
             SunTrackerCentralLogic logic = new SunTrackerCentralLogic(csc, tracker, solarPanels, dal);
@@ -82,7 +86,7 @@ namespace SunTrackerCentral
 
 
                 // Then we generate a light level
-                light = 800;
+                light = 750;
 
                 SunTrackerRecording str = new SunTrackerRecording(hori, vert, light, strdt, true);
                 //Console.WriteLine(str.ToString());

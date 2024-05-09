@@ -28,7 +28,7 @@ namespace SunTrackerCentral.Handlers
 
         void Initialize()
         {
-            sunTrackerComm.Initialize();
+            sunTrackerComm.Initialize(SaveReceivedMessage);
             foreach ( iSendCommunication solarPanel in this.solarPanelComms )
             {
                 solarPanel.Initialize();
@@ -37,34 +37,36 @@ namespace SunTrackerCentral.Handlers
             thread.Start();
         }
 
+        private async Task SaveReceivedMessage(string newMessage)
+        {
+            /*
+            await Console.Out.WriteLineAsync($"Handling message... {newMessage}");
+            Thread.Sleep(2500);
+            await Console.Out.WriteLineAsync($"Message {newMessage} Handled!");
+            //*/
+
+            //* 
+            List<SunTrackerRecording> unsavedSTRs = new List<SunTrackerRecording>();
+            
+            // Then we convert the message into a SunTrackerRecording
+            SunTrackerRecording str = interpreter.ConvertStringToSunTrackerRecording(newMessage);
+            Console.WriteLine("New Recording: " + str.ToString());
+            unsavedSTRs.Add(str);
+
+            // Then we save the SunTrackerRecording to the database
+            dal.SaveRecordings(unsavedSTRs);
+            // Thus we have updated the database
+            
+            //*/
+        }
+
         private void Run()
         {
-            List<string> rawReceivedMessages;
-            List<SunTrackerRecording> unsavedSTRs;
             List<SunTrackerRecording> strs;
 
             while (true)
             {
-                // Here we acquire the latest recordings from the sun tracker
-                rawReceivedMessages = sunTrackerComm.GetMessages();
-                unsavedSTRs = new List<SunTrackerRecording>();
-                foreach(string message in rawReceivedMessages)
-                {
-                    // Then we convert each message (if any) into a SunTrackerRecording
-                    SunTrackerRecording str = interpreter.ConvertStringToSunTrackerRecording(message);
-                    Console.WriteLine("New Recording: " + str.ToString());
-                    unsavedSTRs.Add(str);
-                }
-
-                if (unsavedSTRs.Count > 0)
-                {
-                    // Then we save the SunTrackerRecording to the database
-                    dal.SaveRecordings(unsavedSTRs);
-                    // Thus we have updated the database
-                }
-                //*/
-
-                // Here we get all freshly-updated SunTracker records
+                // Here we get all SunTracker records
                 strs = dal.LoadRecordings();
                 if (strs.Count > 0)
                 {

@@ -9,6 +9,7 @@ using System.Xml.Linq;
 
 namespace SunTrackerCentral.Handlers
 {
+    /*
     public class SerialPortReceiveHandler : SerialPortHandlerBase, iReceiveCommunication
     {
         List<string> receivedMessages;
@@ -89,4 +90,5 @@ namespace SunTrackerCentral.Handlers
             return _messages;
         }
     }
+    //*/
 }
