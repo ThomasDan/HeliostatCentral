@@ -37,7 +37,7 @@ namespace SunTrackerCentral.Handlers
             thread.Start();
         }
 
-        private async Task SaveReceivedMessage(string newMessage)
+        private void SaveReceivedMessage(string newMessage)
         {
             List<SunTrackerRecording> unsavedSTRs = new List<SunTrackerRecording>();
             

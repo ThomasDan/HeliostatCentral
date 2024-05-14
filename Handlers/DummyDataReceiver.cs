@@ -40,7 +40,7 @@ namespace SunTrackerCentral.Handlers
                 // Here we create and run an async task, which awaits the saveReceivedMessage Task.
                 // This allows the delegate Task to be run asynchronously.
                 Task.Run(
-                    async () => await saveReceivedMessage(newMessage)
+                    () => saveReceivedMessage(newMessage)
                     );
                 Thread.Sleep(25);
             }

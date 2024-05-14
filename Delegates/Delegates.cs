@@ -30,5 +30,5 @@ namespace SunTrackerCentral.Delegates
               `.          _.-'`-.
                 `''---''``       `.
     */
-    public delegate Task SaveReceivedMessageDelegate(string message);
+    public delegate void SaveReceivedMessageDelegate(string message);
 }
