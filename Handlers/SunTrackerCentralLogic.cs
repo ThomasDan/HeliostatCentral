@@ -39,13 +39,6 @@ namespace SunTrackerCentral.Handlers
 
         private async Task SaveReceivedMessage(string newMessage)
         {
-            /*
-            await Console.Out.WriteLineAsync($"Handling message... {newMessage}");
-            Thread.Sleep(2500);
-            await Console.Out.WriteLineAsync($"Message {newMessage} Handled!");
-            //*/
-
-            //* 
             List<SunTrackerRecording> unsavedSTRs = new List<SunTrackerRecording>();
             
             // Then we convert the message into a SunTrackerRecording
@@ -55,9 +48,6 @@ namespace SunTrackerCentral.Handlers
 
             // Then we save the SunTrackerRecording to the database
             dal.SaveRecordings(unsavedSTRs);
-            // Thus we have updated the database
-            
-            //*/
         }
 
         private void Run()

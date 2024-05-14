@@ -4,21 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SunTrackerCentral.Interfaces;
-using static SunTrackerCentral.Interfaces.iReceiveCommunication;
+using SunTrackerCentral.Delegates;
 
 namespace SunTrackerCentral.Handlers
 {
     public class DummyDataReceiver : iReceiveCommunication
     {
         //public delegate void SaveReceivedMessage(string message);
-        private SaveReceivedMessage saveReceivedMessage;
+        private SaveReceivedMessageDelegate saveReceivedMessage;
 
         public DummyDataReceiver() 
         {
 
         }
 
-        public void Initialize(SaveReceivedMessage _saveReceivedMessage)
+        public void Initialize(SaveReceivedMessageDelegate _saveReceivedMessage)
         {
             this.saveReceivedMessage = _saveReceivedMessage;
             Thread receiver = new Thread(ReceiveCommunication);
